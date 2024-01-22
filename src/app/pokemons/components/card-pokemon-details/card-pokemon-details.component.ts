@@ -2,6 +2,7 @@ import { Component, EventEmitter, Inject, Output, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dialog } from '@angular/cdk/dialog';
 import { PokemonDetails } from '../../models';
+import { PokedexCrudService } from '../../services/pokedex-crud.service';
 
 @Component({
   selector: 'app-card-pokemon-details',
@@ -9,19 +10,26 @@ import { PokemonDetails } from '../../models';
   styleUrls: ['./card-pokemon-details.component.css'],
 })
 export class CardPokemonDetailsComponent {
+  private pokedexCrud = inject(PokedexCrudService);
   readonly dialogRef = inject(MatDialogRef<CardPokemonDetailsComponent>);
   readonly dialog = inject(Dialog);
 
   constructor(@Inject(MAT_DIALOG_DATA) public pokemonDetails: PokemonDetails) {}
-  @Output() updatePokemon = new EventEmitter<void>();
-  @Output() deletePokemon = new EventEmitter<void>();
 
-  update() {
-    this.updatePokemon.emit();
-  }
+  @Output() addPokemon = new EventEmitter<void>();
 
-  delete() {
-    this.deletePokemon.emit();
+  add() {
+    const addedSuccessfully = this.pokedexCrud.setFavoritePokemon(
+      this.pokemonDetails
+    );
+
+    if (addedSuccessfully) {
+      console.log('pokemon added', this.pokemonDetails);
+
+      this.addPokemon.emit();
+    } else {
+      console.warn('No added');
+    }
   }
 
   close() {

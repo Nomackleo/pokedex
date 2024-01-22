@@ -1,4 +1,4 @@
-<div class="card-container" >
+<div class="card-container">
   <mat-card class="card-pokemon">
     <mat-card-header>
       <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
@@ -27,11 +27,9 @@
         </li>
       </ul>
       <mat-card-actions>
-        <button (click)="update()" mat-raised-button color="primary">
-          Edit
-        </button>
-        <button (click)="delete()" mat-raised-button color="warn">
-          Delete
+        <button (click)="add()" mat-raised-button color="primary">
+          <mat-icon>add</mat-icon>
+          Pokedex
         </button>
       </mat-card-actions>
     </mat-card-content>

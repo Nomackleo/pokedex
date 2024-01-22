@@ -13,8 +13,6 @@ export class PokedexService {
 
   private baseUrl: string = environment.baseUrl;
 
-  constructor() {}
-
   getPokemons$(): Observable<Pokemon[]> {
     const url: string = `${this.baseUrl}/pokemon?limit=1500`;
 
@@ -37,8 +35,6 @@ export class PokedexService {
       const id = urlArr[6];
       const pic = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
-      // console.log(urlArr);
-
       return {
         id,
         pic,
@@ -48,19 +44,4 @@ export class PokedexService {
 
     return pokemonList;
   }
-
-  // create(pokemon: Pokemon) {
-  //   console.log(`create method od service: ${pokemon}`);
-  //   return addDoc(this.pokemonCollection, pokemon);
-  // }
-
-  // update(pokemon: Pokemon) {
-  //   const pokemonDocumentRef = doc(this.firestore, `pokemon/${pokemon.id}`);
-  //   return updateDoc(pokemonDocumentRef, { ...pokemon });
-  // }
-
-  // delete(id: string) {
-  //   const pokemonDocumentRef = doc(this.firestore, `pokemon/${id}`);
-  //   return deleteDoc(pokemonDocumentRef)
-  // }
 }

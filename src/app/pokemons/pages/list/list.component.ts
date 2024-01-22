@@ -30,6 +30,20 @@ export class ListComponent {
   selectedPokemon: PokemonDetails[] = [];
   destroyed$ = new Subject<void>();
   dataSource!: MatTableDataSource<Pokemon>;
+  paginator!: MatPaginator;
+
+  // ngOnInit(): void {
+  //   this.allPokemon$ = this.pokedex.getPokemons$();
+
+  //   this.allPokemon$
+  //     .pipe(
+  //       map((pokemons) => {
+  //         this.dataSource = new MatTableDataSource(pokemons);
+  //         // this.dataSource.paginator = this.paginator;
+  //       })
+  //     )
+  //     .subscribe();
+  // }
 
   ngOnInit(): void {
     this.allPokemon$ = this.pokedex.getPokemons$();
@@ -37,44 +51,13 @@ export class ListComponent {
     this.allPokemon$
       .pipe(
         map((pokemons) => {
-          this.dataSource = new MatTableDataSource(pokemons);
+          this.dataSource = new MatTableDataSource<Pokemon>();
+          this.dataSource.data = pokemons;
+          return pokemons;
         })
       )
       .subscribe();
   }
-
-  // selectPokemon(pokemon: Pokemon) {
-  //   this.selectedPokemon = [];
-  //   this.pokedex
-  //     .getPokemonDetails$(pokemon.name)
-  //     .pipe(
-  //       map(
-  //         (details) => {
-  //           const pokemonDetails: PokemonDetails = {
-  //             pic: details.pic,
-  //             base_experience: details.base_experience,
-  //             height: details.height,
-  //             id: details.id,
-  //             name: details.name,
-  //             order: details.order,
-  //             weight: details.weight,
-  //             species: details.species,
-  //             stats: details.stats,
-  //             types: details.types,
-  //           };
-  //           this.selectedPokemon.push(pokemonDetails);
-  //           console.log('selectedPokemon', this.selectedPokemon);
-  //           console.log('on', pokemonDetails);
-  //           this.openDetails(pokemonDetails);
-  //         },
-  //         (err: Error) => {
-  //           console.log(err);
-  //         }
-  //       )
-  //     )
-  //     .subscribe();
-  // }
-
   selectPokemon(pokemon: Pokemon) {
     this.selectedPokemon = [];
     this.pokedex
@@ -84,8 +67,8 @@ export class ListComponent {
           (details) => {
             const pokemonDetails: PokemonDetails = {
               ...details,
-              stats: [...details.stats], // Copiar la matriz de estadísticas
-              types: [...details.types], // Copiar la matriz de tiposF
+              stats: [...details.stats],
+              types: [...details.types],
             };
             console.log('on', pokemonDetails);
             this.selectedPokemon.push(pokemonDetails);
@@ -108,14 +91,7 @@ export class ListComponent {
       data: pokemonDetails,
       width: '400px',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(take(1))
-      .subscribe(() => {
-        console.log('Dialog closed');
-        console.log('close', pokemonDetails);
-      });
-    console.log('open');
+    dialogRef.afterClosed().pipe(take(1)).subscribe();
   }
 
   deletePokemon() {}

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -19,7 +20,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./card-pokemon.component.css'],
 })
 export class CardPokemonComponent {
-  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
   displayedColumns: string[] = ['id', 'name', 'pic', 'info'];
   @Input() dataSource!: MatTableDataSource<Pokemon>;
   @Input() pokemon$!: Observable<Pokemon[]>;
@@ -28,13 +29,22 @@ export class CardPokemonComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngAfterViewInit() {}
+  constructor() {}
+  ngAfterViewInit(): void {
+    console.log('p', this.paginator);
+
+    // this.dataSource.paginator = this.paginator;
+    console.log('dsp', this.dataSource);
+  }
+
+  loadPages() {}
 
   selectPokemon(pokemon: Pokemon) {
     this.pokemonEmitter.emit(pokemon);
     this.dataSource.paginator = this.paginator;
+
+    console.log('Data', this.dataSource.paginator);
     this.dataSource.sort = this.sort;
-    // this.router.navigate(['/pokemons/pokemon']);
   }
 
   applyFilter(event: Event) {
