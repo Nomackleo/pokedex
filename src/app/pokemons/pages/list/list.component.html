@@ -1,0 +1,9 @@
+<h1>Lista de Pokemones</h1>
+<app-card-pokemon-details
+  [pokemonDetails]="selectedPokemon[0]"
+> </app-card-pokemon-details>
+<app-card-pokemon
+  [pokemon$]="allPokemon$"
+  [dataSource]="dataSource"
+  (pokemonEmitter)="selectPokemon($event)"
+></app-card-pokemon>

@@ -1,0 +1,27 @@
+<div class="card-container">
+  <mat-card class="card-pokemon" *ngIf="pokemonDetails">
+    <mat-card-header>
+      <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
+      <mat-card-subtitle>
+        <mat-chip-listbox aria-label="Tipo de pokemon">
+          <mat-chip-option *ngFor="let type of pokemonDetails.types">{{
+            type.type.name | uppercase
+          }}</mat-chip-option>
+        </mat-chip-listbox>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="pokemonDetails.pic" alt="Foto de un Pokemon" />
+    <mat-card-content>
+      <div>
+        <p>Altura: {{ pokemonDetails.height }} ft</p>
+        <p>Peso: {{ pokemonDetails.weight }} Kg</p>
+        <p>Experiencia {{ pokemonDetails.base_experience }}</p>
+      </div>
+      <p>
+        {{ pokemonDetails.base_experience }}
+      </p>
+      <button (click)="update()" mat-raised-button color="primary">Edit</button>
+      <button (click)="delete()" mat-raised-button color="warn">Delete</button>
+    </mat-card-content>
+  </mat-card>
+</div>
