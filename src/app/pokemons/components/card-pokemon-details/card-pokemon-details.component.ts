@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output, inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { PokemonDetails } from '../../models';
 
 @Component({
@@ -7,7 +9,10 @@ import { PokemonDetails } from '../../models';
   styleUrls: ['./card-pokemon-details.component.css'],
 })
 export class CardPokemonDetailsComponent {
-  @Input() pokemonDetails!: PokemonDetails;
+  readonly dialogRef = inject(MatDialogRef<CardPokemonDetailsComponent>);
+  readonly dialog = inject(Dialog);
+
+  constructor(@Inject(MAT_DIALOG_DATA) public pokemonDetails: PokemonDetails) {}
   @Output() updatePokemon = new EventEmitter<void>();
   @Output() deletePokemon = new EventEmitter<void>();
 
@@ -19,6 +24,10 @@ export class CardPokemonDetailsComponent {
     this.deletePokemon.emit();
   }
 
+  close() {
+    this.dialogRef.close();
+  }
   ngOnInit(): void {
+    console.log('data from card-details', this.pokemonDetails);
   }
 }

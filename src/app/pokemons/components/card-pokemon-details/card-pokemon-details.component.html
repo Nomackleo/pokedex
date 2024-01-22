@@ -1,5 +1,5 @@
-<div class="card-container">
-  <mat-card class="card-pokemon" *ngIf="pokemonDetails">
+<div class="card-container" >
+  <mat-card class="card-pokemon">
     <mat-card-header>
       <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
       <mat-card-subtitle>
@@ -12,16 +12,28 @@
     </mat-card-header>
     <img mat-card-image [src]="pokemonDetails.pic" alt="Foto de un Pokemon" />
     <mat-card-content>
-      <div>
-        <p>Altura: {{ pokemonDetails.height }} ft</p>
-        <p>Peso: {{ pokemonDetails.weight }} Kg</p>
-        <p>Experiencia {{ pokemonDetails.base_experience }}</p>
-      </div>
-      <p>
-        {{ pokemonDetails.base_experience }}
-      </p>
-      <button (click)="update()" mat-raised-button color="primary">Edit</button>
-      <button (click)="delete()" mat-raised-button color="warn">Delete</button>
+      <ul class="list-group border-0">
+        <li class="list-group-item fs-4 text-center">
+          #{{ pokemonDetails.order }}
+        </li>
+        <li class="list-group-item fs-6">
+          Experiencia: {{ pokemonDetails.base_experience }}
+        </li>
+        <li class="list-group-item fs-6">
+          Peso: {{ pokemonDetails.weight }} kg
+        </li>
+        <li class="list-group-item fs-6">
+          Altura: {{ pokemonDetails.height }} ft
+        </li>
+      </ul>
+      <mat-card-actions>
+        <button (click)="update()" mat-raised-button color="primary">
+          Edit
+        </button>
+        <button (click)="delete()" mat-raised-button color="warn">
+          Delete
+        </button>
+      </mat-card-actions>
     </mat-card-content>
   </mat-card>
 </div>

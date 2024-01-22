@@ -4,12 +4,14 @@ import {
   Input,
   Output,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Pokemon } from '../../models/pokemons.interfaces';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card-pokemon',
@@ -17,6 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./card-pokemon.component.css'],
 })
 export class CardPokemonComponent {
+  private router = inject(Router);
   displayedColumns: string[] = ['id', 'name', 'pic', 'info'];
   @Input() dataSource!: MatTableDataSource<Pokemon>;
   @Input() pokemon$!: Observable<Pokemon[]>;
@@ -25,14 +28,13 @@ export class CardPokemonComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() {}
-
   ngAfterViewInit() {}
 
   selectPokemon(pokemon: Pokemon) {
     this.pokemonEmitter.emit(pokemon);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    // this.router.navigate(['/pokemons/pokemon']);
   }
 
   applyFilter(event: Event) {

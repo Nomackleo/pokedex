@@ -1,9 +1,21 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { PokedexService } from '../../services/pokedex.service';
-import { Observable, Subject, map } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  catchError,
+  map,
+  of,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Pokemon, PokemonDetails } from '../../models';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { CardPokemonDetailsComponent } from '../../components/card-pokemon-details/card-pokemon-details.component';
+import { PokedexComponent } from '../pokedex/pokedex.component';
 
 @Component({
   selector: 'app-list',
@@ -11,12 +23,13 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrls: ['./list.component.css'],
 })
 export class ListComponent {
+  readonly pokedex = inject(PokedexService);
+  readonly dialog = inject(MatDialog);
+
   allPokemon$!: Observable<Pokemon[]>;
   selectedPokemon: PokemonDetails[] = [];
   destroyed$ = new Subject<void>();
   dataSource!: MatTableDataSource<Pokemon>;
-
-  readonly pokedex = inject(PokedexService);
 
   ngOnInit(): void {
     this.allPokemon$ = this.pokedex.getPokemons$();
@@ -30,35 +43,79 @@ export class ListComponent {
       .subscribe();
   }
 
+  // selectPokemon(pokemon: Pokemon) {
+  //   this.selectedPokemon = [];
+  //   this.pokedex
+  //     .getPokemonDetails$(pokemon.name)
+  //     .pipe(
+  //       map(
+  //         (details) => {
+  //           const pokemonDetails: PokemonDetails = {
+  //             pic: details.pic,
+  //             base_experience: details.base_experience,
+  //             height: details.height,
+  //             id: details.id,
+  //             name: details.name,
+  //             order: details.order,
+  //             weight: details.weight,
+  //             species: details.species,
+  //             stats: details.stats,
+  //             types: details.types,
+  //           };
+  //           this.selectedPokemon.push(pokemonDetails);
+  //           console.log('selectedPokemon', this.selectedPokemon);
+  //           console.log('on', pokemonDetails);
+  //           this.openDetails(pokemonDetails);
+  //         },
+  //         (err: Error) => {
+  //           console.log(err);
+  //         }
+  //       )
+  //     )
+  //     .subscribe();
+  // }
+
   selectPokemon(pokemon: Pokemon) {
     this.selectedPokemon = [];
     this.pokedex
       .getPokemonDetails$(pokemon.name)
       .pipe(
-        map(
+        tap(
           (details) => {
-            console.log(details);
             const pokemonDetails: PokemonDetails = {
-              pic: details.pic,
-              base_experience: details.base_experience,
-              height: details.height,
-              id: details.id,
-              name: details.name,
-              order: details.order,
-              weight: details.weight,
-              species: details.species,
-              stats: details.stats,
-              types: details.types,
+              ...details,
+              stats: [...details.stats], // Copiar la matriz de estadísticas
+              types: [...details.types], // Copiar la matriz de tiposF
             };
-            this.selectedPokemon.push(pokemonDetails);
             console.log('on', pokemonDetails);
+            this.selectedPokemon.push(pokemonDetails);
+            console.log('array', this.selectedPokemon);
+            this.openDetails(this.selectedPokemon[0]);
           },
-          (err: Error) => {
-            console.log(err);
-          }
-        )
+          catchError((err: Error) => {
+            console.error('Error fetching Pokemon details', err);
+            return of(null);
+          })
+        ),
+        take(1)
       )
       .subscribe();
+  }
+  openDetails(pokemonDetails: PokemonDetails) {
+    console.log('pokemon', this.selectedPokemon[0]);
+    console.log('pokemonDetails', pokemonDetails);
+    const dialogRef = this.dialog.open(CardPokemonDetailsComponent, {
+      data: pokemonDetails,
+      width: '400px',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(() => {
+        console.log('Dialog closed');
+        console.log('close', pokemonDetails);
+      });
+    console.log('open');
   }
 
   deletePokemon() {}
