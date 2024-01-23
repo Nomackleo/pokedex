@@ -1,0 +1,44 @@
+.card-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+.filter-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+
+.mat-mdc-row:hover {
+  background-color: rgba(255, 0, 255, 0.06) !important;
+  cursor: pointer;
+
+  transition: background-color 0.2s cubic-bezier(0.25, 0.15, 0.25, 1),
+    cursor 0.5s ease-in-out;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .mat-mdc-table {
+  }
+  .mat-header-cell,
+  .mat-cell {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
+  .mat-header-cell {
+    text-align: center;
+  }
+
+  .mat-header-row,
+  .mat-row {
+    flex-direction: column;
+  }
+}

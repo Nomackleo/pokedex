@@ -1,6 +1,7 @@
-<h1>Lista de Pokemones</h1>
+<h1 class="title">Lista de Pokemones</h1>
 <app-card-pokemon
   [pokemon$]="allPokemon$"
   [dataSource]="dataSource"
   (pokemonEmitter)="selectPokemon($event)"
+  class="card-list animate__animated animate__fadeIn"
 ></app-card-pokemon>
