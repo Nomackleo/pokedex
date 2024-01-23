@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  HostListener,
   Input,
   Output,
   ViewChild,
@@ -13,6 +14,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { PokemonDetails } from '../../models';
+import { PokedexCrudService } from '../../services/pokedex-crud.service';
+import { PokedexService } from '../../services/pokedex.service';
 
 @Component({
   selector: 'app-card-pokemon',
@@ -20,8 +24,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./card-pokemon.component.css'],
 })
 export class CardPokemonComponent {
-  private cdr = inject(ChangeDetectorRef);
-  displayedColumns: string[] = ['id', 'name', 'pic', 'info'];
+  private pokedexCrud = inject(PokedexCrudService);
+  private pokedex = inject(PokedexService);
+  displayedColumns: string[] = ['id', 'name', 'pic', 'pokedex'];
+  isMobileView: boolean = false;
+
   @Input() dataSource!: MatTableDataSource<Pokemon>;
   @Input() pokemon$!: Observable<Pokemon[]>;
   @Output() pokemonEmitter = new EventEmitter<Pokemon>();
@@ -30,11 +37,12 @@ export class CardPokemonComponent {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() {}
+  ngOnInit(): void {
+    this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => pokemon);
+  }
   ngAfterViewInit(): void {
-    console.log('p', this.paginator);
-
-    // this.dataSource.paginator = this.paginator;
-    console.log('dsp', this.dataSource);
+    this.paginator.pageSize = 5;
+    this.isMobileView = window.innerWidth < 625;
   }
 
   loadPages() {}
@@ -42,9 +50,12 @@ export class CardPokemonComponent {
   selectPokemon(pokemon: Pokemon) {
     this.pokemonEmitter.emit(pokemon);
     this.dataSource.paginator = this.paginator;
-
-    console.log('Data', this.dataSource.paginator);
     this.dataSource.sort = this.sort;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobileView = window.innerWidth < 625;
   }
 
   applyFilter(event: Event) {
@@ -53,6 +64,47 @@ export class CardPokemonComponent {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  add() {
+    this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => {
+      console.log('Pokemon a agregar desde List', pokemon);
+
+      pokemon != null ? this.addToPokedex(pokemon) : console.error('Error');
+    });
+  }
+
+  addToPokedex(pokemon: PokemonDetails) {
+    const added = this.pokedexCrud.setFavoritePokemon(pokemon);
+
+    if (added) {
+      console.log('Pokemon added to Pokedex:', pokemon);
+    } else {
+      console.log('Pokedex is full. Cannot add more Pokemon.');
+      // Puedes manejar este caso de acuerdo a tus necesidades, por ejemplo, mostrar un mensaje al usuario.
+    }
+  }
+
+  remove() {
+    this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => {
+      pokemon != null
+        ? this.removeFromPokedex(pokemon)
+        : console.error('Error remove');
+    });
+  }
+
+  removeFromPokedex(pokemon: PokemonDetails): void {
+    const isInPokedex = this.pokedexCrud.isFavoritePokemon(
+      pokemon.id.toString()
+    );
+
+    if (isInPokedex) {
+      this.pokedexCrud.removeFavoritePokemon(pokemon.id);
+      console.log('Pokemon removed from Pokedex:', pokemon);
+    } else {
+      console.log('Pokemon not in Pokedex. Cannot remove.');
+      // Puedes manejar este caso de acuerdo a tus necesidades, por ejemplo, mostrar un mensaje al usuario.
     }
   }
 }

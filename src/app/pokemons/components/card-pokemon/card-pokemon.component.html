@@ -1,15 +1,17 @@
 <div class="card-list">
   <mat-form-field class="filter-field">
-    <mat-label>Filter</mat-label>
+    <mat-label>Buscar pokemon</mat-label>
     <input
       matInput
       (keyup)="applyFilter($event)"
-      placeholder="Ex. Mia"
+      placeholder="Pikachu"
       #input
     />
   </mat-form-field>
 
-  <div class="mat-elevation-z8 animate__animated animate__fadeIn table-container">
+  <div
+    class="mat-elevation-z8 animate__animated animate__fadeIn table-container"
+  >
     <table mat-table [dataSource]="dataSource" matSort>
       <!-- ID Column -->
       <ng-container matColumnDef="id">
@@ -31,14 +33,40 @@
         </td>
       </ng-container>
 
-      <!-- Info Column -->
-      <ng-container matColumnDef="info">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Pokedex</th>
-        <td mat-cell *matCellDef="let row">
-          <button mat-mini-fab color="primary"><mat-icon>add</mat-icon></button>
+      <!-- Add Column -->
+      <ng-container matColumnDef="pokedex">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [ngClass]="{ 'hidden-mobile': isMobileView }"
+        >
+          Pokedex
+        </th>
+
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [ngClass]="{ 'hidden-mobile': isMobileView }"
+        >
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Agregar pokemon a pokedex"
+            (click)="add()"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            matTooltip="Quitar pokemon de pokedex"
+            (click)="removeFromPokedex(row)"
+          >
+            <mat-icon>remove</mat-icon>
+          </button>
         </td>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr
         mat-row

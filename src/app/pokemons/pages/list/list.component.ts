@@ -28,22 +28,10 @@ export class ListComponent {
 
   allPokemon$!: Observable<Pokemon[]>;
   selectedPokemon: PokemonDetails[] = [];
+  pokemonDetails!: PokemonDetails;
   destroyed$ = new Subject<void>();
   dataSource!: MatTableDataSource<Pokemon>;
   paginator!: MatPaginator;
-
-  // ngOnInit(): void {
-  //   this.allPokemon$ = this.pokedex.getPokemons$();
-
-  //   this.allPokemon$
-  //     .pipe(
-  //       map((pokemons) => {
-  //         this.dataSource = new MatTableDataSource(pokemons);
-  //         // this.dataSource.paginator = this.paginator;
-  //       })
-  //     )
-  //     .subscribe();
-  // }
 
   ngOnInit(): void {
     this.allPokemon$ = this.pokedex.getPokemons$();
@@ -58,6 +46,11 @@ export class ListComponent {
       )
       .subscribe();
   }
+
+  /**
+   * TODO: Verificar método.
+   * @param pokemon
+   */
   selectPokemon(pokemon: Pokemon) {
     this.selectedPokemon = [];
     this.pokedex
@@ -70,9 +63,7 @@ export class ListComponent {
               stats: [...details.stats],
               types: [...details.types],
             };
-            console.log('on', pokemonDetails);
             this.selectedPokemon.push(pokemonDetails);
-            console.log('array', this.selectedPokemon);
             this.openDetails(this.selectedPokemon[0]);
           },
           catchError((err: Error) => {
@@ -84,14 +75,16 @@ export class ListComponent {
       )
       .subscribe();
   }
+
   openDetails(pokemonDetails: PokemonDetails) {
-    console.log('pokemon', this.selectedPokemon[0]);
-    console.log('pokemonDetails', pokemonDetails);
+    this.pokemonDetails = pokemonDetails;
     const dialogRef = this.dialog.open(CardPokemonDetailsComponent, {
       data: pokemonDetails,
       width: '400px',
     });
     dialogRef.afterClosed().pipe(take(1)).subscribe();
+    this.pokedex.pokemonDetailsSubject.next(pokemonDetails);
+
   }
 
   deletePokemon() {}

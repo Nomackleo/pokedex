@@ -34,16 +34,26 @@ export class PokedexCrudService {
   }
 
   setFavoritePokemon(pokemon: PokemonDetails): boolean {
+    const pokemonId = pokemon.id.toString();
+
+    // Check if the Pokemon is already in the Pokedex
+    if (this.isFavoritePokemon(pokemonId)) {
+      console.warn(`Pokemon Already Added: ${pokemon.name}`);
+      return false;
+    }
+
+    // Check if the Pokedex is full
     if (this.pokedex.length < this.MAX_POKEMONS_IN_POKEDEX) {
       this.pokedex.push(pokemon);
       this.savePokedexToLocalStorage();
       this.resetFavorites.next();
+      console.log(`Pokemon Added: ${pokemon.name}`);
       return true;
+    } else {
+      console.warn('Pokedex is Full. Cannot Add More Pokemon.');
+      return false;
     }
-
-    return false;
   }
-
   removeFavoritePokemon(id: number): void {
     const index = this.pokedex.findIndex((pokemon) => pokemon.id === id);
 
