@@ -13,11 +13,15 @@ export class CardPokemonDetailsComponent {
   private pokedexCrud = inject(PokedexCrudService);
   readonly dialogRef = inject(MatDialogRef<CardPokemonDetailsComponent>);
   readonly dialog = inject(Dialog);
+  inPokedex!: boolean;
 
   constructor(@Inject(MAT_DIALOG_DATA) public pokemonDetails: PokemonDetails) {}
 
   @Output() addPokemon = new EventEmitter<void>();
 
+  ngOnInit(): void {
+    this.updatePokedexStatus(this.pokemonDetails);
+  }
   add() {
     const addedSuccessfully = this.pokedexCrud.setFavoritePokemon(
       this.pokemonDetails
@@ -25,7 +29,7 @@ export class CardPokemonDetailsComponent {
 
     if (addedSuccessfully) {
       console.log('pokemon added', this.pokemonDetails);
-
+      // this.updatePokedexStatus(this.pokemonDetails);
       this.addPokemon.emit();
     } else {
       console.warn('No added');
@@ -35,7 +39,14 @@ export class CardPokemonDetailsComponent {
   close() {
     this.dialogRef.close();
   }
-  ngOnInit(): void {
-    console.log('data from card-details', this.pokemonDetails);
+
+  updatePokedexStatus(pokemonDetails: PokemonDetails): boolean {
+    const pokedexData = this.pokedexCrud.getPokedex();
+    const inPokedex = pokedexData.some(
+      (pokemon) => pokemon.id === pokemonDetails.id
+    );
+
+    console.log('inPokedex?:', inPokedex);
+    return this.inPokedex = inPokedex;
   }
 }

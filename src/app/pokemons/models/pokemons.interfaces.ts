@@ -10,12 +10,12 @@ export interface FecthPokemon {
 export interface selectPokemon {
   name: string;
   url: string;
-  pic: string
+  pic: string;
 }
 
 export interface Pokemon {
   id: string;
   name: string;
   pic: string;
+  inPokedex?: boolean;
 }
-

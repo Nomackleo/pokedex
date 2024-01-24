@@ -39,6 +39,7 @@ export class CardPokemonComponent {
   constructor() {}
   ngOnInit(): void {
     this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => pokemon);
+    // this.dataSource.paginator = this.paginator;
   }
   ngAfterViewInit(): void {
     this.paginator.pageSize = 5;
@@ -80,6 +81,7 @@ export class CardPokemonComponent {
 
     if (added) {
       console.log('Pokemon added to Pokedex:', pokemon);
+      this.updatePokedexStatus(pokemon.id, true);
     } else {
       console.log('Pokedex is full. Cannot add more Pokemon.');
       // Puedes manejar este caso de acuerdo a tus necesidades, por ejemplo, mostrar un mensaje al usuario.
@@ -102,9 +104,22 @@ export class CardPokemonComponent {
     if (isInPokedex) {
       this.pokedexCrud.removeFavoritePokemon(pokemon.id);
       console.log('Pokemon removed from Pokedex:', pokemon);
+      // const pokemonId = pokemon.id.toString()
+      this.updatePokedexStatus(pokemon.id, false);
     } else {
       console.log('Pokemon not in Pokedex. Cannot remove.');
       // Puedes manejar este caso de acuerdo a tus necesidades, por ejemplo, mostrar un mensaje al usuario.
+    }
+  }
+
+  updatePokedexStatus(pokemonId: number, inPokedex: boolean): void {
+    const foundPokemon = this.dataSource.data.find(
+      (pokemon) => Number(pokemon.id) === +pokemonId
+    );
+
+    if (foundPokemon) {
+      foundPokemon.inPokedex = inPokedex;
+      this.dataSource.data = [...this.dataSource.data]; // Para actualizar la referencia y reflejar los cambios en el template
     }
   }
 }

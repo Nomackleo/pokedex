@@ -8,14 +8,15 @@
   width: 100%;
   margin-bottom: 16px;
 }
-.mat-mdc-row {
+.mat-mdc-row .mat-mdc-cell{
   border-bottom: 1px solid transparent;
   border-top: 1px solid transparent;
   cursor: pointer;
 }
 
-.mat-mdc-row:hover {
+.mat-mdc-row:hover .mat-mdc-cell{
   background-color: rgba(255, 0, 255, 0.06) !important;
+  border-color: #69f0ae;
   transition: background-color 0.2s cubic-bezier(0.25, 0.15, 0.25, 1),
     cursor 0.5s ease-in-out;
 }

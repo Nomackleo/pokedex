@@ -1,39 +1,50 @@
 <div class="card-container">
-  <mat-card class="card-pokemon">
+  <mat-card
+    class="card-pokemon"
+    [ngClass]="{ 'pokemon-in-pokedex': inPokedex }"
+  >
     <mat-card-header>
       <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
       <mat-card-subtitle>
-        <mat-chip-listbox aria-label="Tipo de pokemon">
-          <mat-chip-option *ngFor="let type of pokemonDetails.types">{{
-            type.type.name | uppercase
-          }}</mat-chip-option>
-        </mat-chip-listbox>
+        {{ pokemonDetails.order }} 
       </mat-card-subtitle>
     </mat-card-header>
     <img mat-card-image [src]="pokemonDetails.pic" alt="Foto de un Pokemon" />
     <mat-card-content>
-      <ul class="list-group border-0">
-        <li class="list-group-item fs-4 text-center">
-          #{{ pokemonDetails.order }}
-        </li>
-        <li class="list-group-item fs-6">
-          Experiencia: {{ pokemonDetails.base_experience }}
-        </li>
-        <li class="list-group-item fs-6">
-          Peso: {{ pokemonDetails.weight }} kg
-        </li>
-        <li class="list-group-item fs-6">
-          Altura: {{ pokemonDetails.height }} ft
-        </li>
-      </ul>
+      <div class="type">
+        <mat-chip-set aria-label="Tipo de pokemon">
+          <mat-chip *ngFor="let type of pokemonDetails.types">{{
+            type.type.name | uppercase
+          }}</mat-chip>
+        </mat-chip-set>
+      </div>
+      <div class="list">
+        <ul>
+          <li class="experience">
+            Experiencia: <span>{{ pokemonDetails.base_experience }}</span>
+          </li>
+          <li class="weight">
+            Peso: <span>{{ pokemonDetails.weight }}</span> kg
+          </li>
+          <li class="height">
+            Altura: <span>{{ pokemonDetails.height }}</span> ft
+          </li>
+        </ul>
+      </div>
       <mat-card-actions>
-        <button (click)="add()" mat-raised-button color="primary">
+        <button
+          mat-stroked-button
+          (click)="add()"
+          matTooltip="Agregar pokemon a pokedex"
+          color="accent"
+          *ngIf="!inPokedex"
+        >
           <mat-icon>add</mat-icon>
           Agregar
         </button>
-        <button (click)="add()" mat-raised-button color="primary">
+        <button (click)="close()" mat-stroked-button>
           <mat-icon>close</mat-icon>
-          Agregar
+          Cerrar
         </button>
       </mat-card-actions>
     </mat-card-content>

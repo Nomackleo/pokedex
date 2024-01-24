@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { PokemonDetails } from '../../models';
 import { Router } from '@angular/router';
+import { PokedexService } from '../../services/pokedex.service';
 
 @Component({
   selector: 'app-pokedex',
@@ -10,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class PokedexComponent {
   private pokedexCrud = inject(PokedexCrudService);
+  private pokedexPokemon = inject(PokedexService);
   private router = inject(Router);
 
   pokedex: PokemonDetails[] = [];
@@ -20,19 +22,12 @@ export class PokedexComponent {
     console.log(this.pokedex);
   }
 
-  update() {
-    this.router.navigate(['pokemons/list'])
+  remove(pokemon: number) {
+    this.pokedexCrud.removeFavoritePokemon(pokemon);
   }
 
   selectPokemon(pokemon: PokemonDetails) {
     this.selectedPokemon = pokemon;
   }
-  
-  delete(pokemon: PokemonDetails): void {
-    if (pokemon) {
-      this.pokedexCrud.removeFavoritePokemon(pokemon.id);
-      console.log('Pokemon deleted', pokemon);
-      this.selectedPokemon = undefined;
-    }
-  }
+
 }

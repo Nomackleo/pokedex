@@ -54,6 +54,7 @@
             color="primary"
             matTooltip="Agregar pokemon a pokedex"
             (click)="add()"
+            [disabled]="row.inPokedex"
           >
             <mat-icon>add</mat-icon>
           </button>
@@ -61,7 +62,8 @@
             mat-mini-fab
             color="warn"
             matTooltip="Quitar pokemon de pokedex"
-            (click)="removeFromPokedex(row)"
+            (click)="remove()"
+            [disabled]="!row.inPokedex"
           >
             <mat-icon>remove</mat-icon>
           </button>
@@ -72,12 +74,13 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         (click)="selectPokemon(row)"
+        [ngClass]="{ 'pokemon-in-pokedex': row.inPokedex }"
       ></tr>
 
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row pokemon-rows" *matNoDataRow>
         <td class="mat-cell" colspan="4">
-          No data matching the filter "{{ input.value }}"
+          No se encuentra el pokémon que escribiste. "{{ input.value }}"
         </td>
       </tr>
     </table>

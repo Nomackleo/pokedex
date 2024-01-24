@@ -16,6 +16,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { CardPokemonDetailsComponent } from '../../components/card-pokemon-details/card-pokemon-details.component';
 import { PokedexComponent } from '../pokedex/pokedex.component';
+import { PokedexCrudService } from '../../services/pokedex-crud.service';
 
 @Component({
   selector: 'app-list',
@@ -23,7 +24,8 @@ import { PokedexComponent } from '../pokedex/pokedex.component';
   styleUrls: ['./list.component.css'],
 })
 export class ListComponent {
-  readonly pokedex = inject(PokedexService);
+  readonly pokedexAllPokemons = inject(PokedexService);
+  readonly pokedex = inject(PokedexCrudService);
   readonly dialog = inject(MatDialog);
 
   allPokemon$!: Observable<Pokemon[]>;
@@ -34,26 +36,38 @@ export class ListComponent {
   paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.allPokemon$ = this.pokedex.getPokemons$();
+    this.allPokemon$ = this.pokedexAllPokemons.getPokemons$();
 
     this.allPokemon$
       .pipe(
         map((pokemons) => {
           this.dataSource = new MatTableDataSource<Pokemon>();
+          this.dataSource.paginator = this.paginator;
           this.dataSource.data = pokemons;
+          this.checkPokedexStatus();
           return pokemons;
         })
       )
       .subscribe();
   }
 
+  checkPokedexStatus() {
+    const pokedexData = this.pokedex.getPokedex();
+    if (pokedexData.length > 0) {
+      this.dataSource.data.forEach((pokemon) => {
+        pokemon.inPokedex = this.pokedex.isFavoritePokemon(
+          pokemon.id.toString()
+        );
+      });
+    }
+  }
   /**
-   * TODO: Verificar método.
+   * TODO: Mensajes de comprobación.
    * @param pokemon
    */
   selectPokemon(pokemon: Pokemon) {
     this.selectedPokemon = [];
-    this.pokedex
+    this.pokedexAllPokemons
       .getPokemonDetails$(pokemon.name)
       .pipe(
         tap(
@@ -83,8 +97,7 @@ export class ListComponent {
       width: '400px',
     });
     dialogRef.afterClosed().pipe(take(1)).subscribe();
-    this.pokedex.pokemonDetailsSubject.next(pokemonDetails);
-
+    this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
   }
 
   deletePokemon() {}

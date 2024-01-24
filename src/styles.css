@@ -12,3 +12,10 @@ body {
 .spacer {
   flex: 1 1 auto;
 }
+
+.app-card-pokemon-details {
+  border: 3px solid #7b1fa2;
+  border-radius: 25px;
+
+  background-color: #69f0ae;
+}
