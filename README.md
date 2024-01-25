@@ -2,26 +2,57 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.10.
 
-## Development server
+# Pokedex Angular App
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Esta aplicación Angular utiliza el framework Material Design para crear una Pokedex simple. La Pokedex permite ver una lista de Pokemon, agregarlos o quitarlos de tu Pokedex personal.
 
-## Code scaffolding
+## Componentes Principales
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### `CardPokemonComponent`
 
-## Build
+Este componente muestra una tabla de Pokemon con las siguientes columnas: ID, Nombre, Foto y Acciones (Agregar/Quitar de Pokedex). También tiene un campo de búsqueda para filtrar la lista.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Métodos:**
+  - `selectPokemon(pokemon: Pokemon)`: Emite un evento cuando se selecciona un Pokemon.
+  - `add()`: Agrega un Pokemon al Pokedex.
+  - `remove()`: Quita un Pokemon del Pokedex.
 
-## Running unit tests
+### `CardPokemonDetailsComponent`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Este componente se abre al seleccionar un Pokemon en `CardPokemonComponent`. Muestra detalles del Pokemon seleccionado y permite agregarlo al Pokedex.
 
-## Running end-to-end tests
+- **Métodos:**
+  - `add()`: Agrega el Pokemon actual al Pokedex.
+  - `close()`: Cierra el componente de detalles.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### `ListComponent`
 
-## Further help
+El componente principal que orquesta la lógica y muestra la lista de Pokemon. Utiliza los servicios `PokedexService` y `PokedexCrudService` para obtener y gestionar los datos.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- **Métodos:**
+  - `selectPokemon(pokemon: Pokemon)`: Selecciona un Pokemon y muestra sus detalles.
+  - `openDetails(pokemonDetails: PokemonDetails)`: Abre el componente de detalles.
+  - `ngOnDestroy()`: Limpieza de recursos cuando el componente se destruye.
+
+## Servicios
+
+### `PokedexService`
+
+Maneja la obtención de la lista de Pokemon y sus detalles utilizando la PokeAPI.
+
+### `PokedexCrudService`
+
+Maneja la lógica del Pokedex, permite agregar, quitar y obtener información sobre los Pokemon en el Pokedex.
+
+### `MessageSnackbarService`
+
+Un servicio para mostrar mensajes a través de un MatSnackBar. Utiliza el componente `MessagesComponent` para personalizar la apariencia del mensaje.
+
+## Instalación y Ejecución
+
+1. Clona este repositorio.
+2. Ejecuta `npm install` para instalar las dependencias.
+3. Ejecuta `ng serve` para iniciar la aplicación en modo desarrollo.
+4. Abre tu navegador y visita `http://localhost:4200/`.
+
+¡Disfruta explorando la Pokedex Angular App!
