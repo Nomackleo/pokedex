@@ -1,0 +1,21 @@
+<div
+  class="snackbar animate__animated animate__bounce {{ data.panelClass }}"
+  id="message"
+>
+  <div class="alert">
+    <h4 class="alert__heading">{{ data.title | titlecase }}</h4>
+    <p class="alert__body">{{ data.body }}</p>
+    <hr />
+    <p class="alert__suggestion">{{ data.suggestion }}</p>
+    <div matSnackBarActions class="alert__actions">
+      <button
+        mat-mini-fab
+        matSnackBarAction
+        aria-label="Cierra los mensajes de eventos"
+        (click)="snackBarRef.dismissWithAction()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

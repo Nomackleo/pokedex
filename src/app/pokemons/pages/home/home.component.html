@@ -10,12 +10,10 @@
 
     <mat-nav-list>
       <a routerLink="./list" mat-list-item (click)="sidenav.toggle()">
-        <mat-icon mat-list-icon>label</mat-icon>
         <span>Pokemons</span>
       </a>
 
       <a routerLink="./pokedex" mat-list-item (click)="sidenav.toggle()">
-        <mat-icon mat-list-icon>add</mat-icon>
         <span>Pokedex</span>
       </a>
     </mat-nav-list>
@@ -27,13 +25,19 @@
     </button>
 
     <span class="spacer"></span>
-
+    <div class="Pokedex">Pokedex</div>
     <button
       mat-icon-button
       class="favorite-icon"
       aria-label="Pokedex"
+      routerLink="./pokedex"
     >
-      <mat-icon>favorite</mat-icon>
+      <mat-icon
+        [matBadge]="matBadge"
+        matBadgePosition="after"
+        matBadgeColor="accent"
+        >favorite</mat-icon
+      >
     </button>
   </mat-toolbar>
 

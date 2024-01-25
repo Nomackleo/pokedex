@@ -9,6 +9,7 @@ import { PokemonComponent } from './pages/pokemon/pokemon.component';
 import { PokedexComponent } from './pages/pokedex/pokedex.component';
 import { CardPokemonComponent } from './components/card-pokemon/card-pokemon.component';
 import { CardPokemonDetailsComponent } from './components/card-pokemon-details/card-pokemon-details.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { CardPokemonDetailsComponent } from './components/card-pokemon-details/c
     PokemonComponent,
     PokedexComponent,
     CardPokemonComponent,
-    CardPokemonDetailsComponent
+    CardPokemonDetailsComponent,
+    MessagesComponent
   ],
   imports: [CommonModule, PokemonsRoutingModule, MaterialModule],
 })

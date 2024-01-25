@@ -1,0 +1,28 @@
+.snackbar {
+  padding: 16px;
+  border-radius: 4px;
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  transition: opacity 0.3s;
+
+  /* max-width: 400px; */
+}
+.success {
+  background-color: #4caf50;
+}
+.error {
+  background-color: #f44336;
+}
+.warning {
+  background-color: #ff9800;
+}
+.alert__suggestion {
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.cdk-overlay-panel {
+  padding: 0;
+  margin: 0;
+  background-color: #ff9800;
+}

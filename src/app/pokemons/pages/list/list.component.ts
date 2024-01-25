@@ -1,21 +1,11 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { PokedexService } from '../../services/pokedex.service';
-import {
-  Observable,
-  Subject,
-  catchError,
-  map,
-  of,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { Observable, Subject, catchError, map, of, take, tap } from 'rxjs';
 import { Pokemon, PokemonDetails } from '../../models';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { CardPokemonDetailsComponent } from '../../components/card-pokemon-details/card-pokemon-details.component';
-import { PokedexComponent } from '../pokedex/pokedex.component';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 
 @Component({
@@ -50,7 +40,9 @@ export class ListComponent {
       )
       .subscribe();
   }
-
+  /**
+   * Método para verificar el estado del Pokedex y actualizar los Pokémon en la tabla.
+   */
   checkPokedexStatus() {
     const pokedexData = this.pokedex.getPokedex();
     if (pokedexData.length > 0) {
@@ -62,8 +54,8 @@ export class ListComponent {
     }
   }
   /**
-   * TODO: Mensajes de comprobación.
-   * @param pokemon
+   * Método para seleccionar un Pokémon y mostrar sus detalles.
+   * @param pokemon - Pokémon seleccionado.
    */
   selectPokemon(pokemon: Pokemon) {
     this.selectedPokemon = [];
@@ -89,7 +81,10 @@ export class ListComponent {
       )
       .subscribe();
   }
-
+  /**
+   * Método para enviar la data al componente hijo por medio de dialodRef.
+   * @param pokemonDetails - Detalles del Pokémon.
+   */
   openDetails(pokemonDetails: PokemonDetails) {
     this.pokemonDetails = pokemonDetails;
     const dialogRef = this.dialog.open(CardPokemonDetailsComponent, {
@@ -99,10 +94,6 @@ export class ListComponent {
     dialogRef.afterClosed().pipe(take(1)).subscribe();
     this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
   }
-
-  deletePokemon() {}
-
-  updatePokemon() {}
 
   ngOnDestroy(): void {
     this.destroyed$.next();
