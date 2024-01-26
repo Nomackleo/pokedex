@@ -2,6 +2,9 @@
 <app-card-pokemon
   [pokemon$]="allPokemon$"
   [dataSource]="dataSource"
+  [pageSize]="pageSize"
   (pokemonEmitter)="selectPokemon($event)"
+  (addPokemon)="add()"
+  (removePokemon)="remove()"
   class="card-list animate__animated animate__fadeIn"
 ></app-card-pokemon>

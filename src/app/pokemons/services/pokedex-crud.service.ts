@@ -48,6 +48,9 @@ export class PokedexCrudService {
 
     // Verifica si el Pokémon ya está en el Pokedex.
     if (this.isFavoritePokemon(pokemonId)) {
+      console.log('Pokemon in Pokedex:', pokemonId);
+      console.log('Está en el pokedex:', this.isFavoritePokemon);
+
       console.warn(`Pokemon Already Added: ${pokemon.name}`);
       return false;
     }

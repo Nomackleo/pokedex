@@ -35,8 +35,10 @@ export class CardPokemonComponent {
 
   @Input() dataSource!: MatTableDataSource<Pokemon>;
   @Input() pokemon$!: Observable<Pokemon[]>;
+  @Input() pageSize!: number;
   @Output() pokemonEmitter = new EventEmitter<Pokemon>();
-
+  @Output() addPokemon = new EventEmitter<void>();
+  @Output() removePokemon = new EventEmitter<void>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -51,7 +53,6 @@ export class CardPokemonComponent {
    * Configura el paginador y determina si la vista es móvil.
    */
   ngAfterViewInit(): void {
-    this.paginator.pageSize = 5;
     this.isMobileView = window.innerWidth < 625;
   }
   /**
@@ -84,97 +85,15 @@ export class CardPokemonComponent {
       this.dataSource.paginator.firstPage();
     }
   }
-  /**
-   * Método para agregar un Pokémon al Pokedex.
-   */
-  add(): void {
-    this.pokedex
-      .getPokemonDetailsObservable$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((pokemon) => {
-        pokemon != null ? this.addToPokedex(pokemon) : console.error('Error');
-      });
-  }
-  /**
-   * Método para agregar un Pokémon al Pokedex y mostrar mensajes.
-   * @param pokemon @param pokemon - Pokémon a agregar al Pokedex.
-   */
-  addToPokedex(pokemon: PokemonDetails) {
-    const added = this.pokedexCrud.setFavoritePokemon(pokemon);
 
-    if (added) {
-      const succesData: MessageSnackbarData = {
-        title: 'Pokedex',
-        body: `El Pokémon ${pokemon.name} fue agregado a tu pokedex`,
-        panelClass: 'success',
-      };
-      this.message.showSnackBar(this.snackbar, succesData);
-      console.log('Pokemon added to Pokedex:', pokemon);
-      this.updatePokedexStatus(pokemon.id, true);
-    } else {
-      const errorData: MessageSnackbarData = {
-        title: 'Ooops',
-        body: 'El Pokedex está lleno. No se pueden agregar más Pokémon.',
-        suggestion:
-          'Considera remover un Pokémon antes de intentar agregar otro.',
-        panelClass: 'warning',
-      };
-      this.message.showSnackBar(this.snackbar, errorData);
-      console.log('Pokedex is full. Cannot add more Pokemon.');
-    }
+  add() {
+    this.addPokemon.emit();
   }
-  /**
-   * Método para remover un Pokémon del Pokedex.
-   */
+
   remove() {
-    this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => {
-      pokemon != null
-        ? this.removeFromPokedex(pokemon)
-        : console.error('Error remove');
-    });
+    this.removePokemon.emit();
   }
-  /**
-   * Método para remover un Pokémon del Pokedex y mostrar mensajes.
-   * @param pokemon - Pokémon a remover del Pokedex.
-   */
-  removeFromPokedex(pokemon: PokemonDetails): void {
-    const isInPokedex = this.pokedexCrud.isFavoritePokemon(
-      pokemon.id.toString()
-    );
 
-    if (isInPokedex) {
-      this.pokedexCrud.removeFavoritePokemon(pokemon.id);
-      const successData: MessageSnackbarData = {
-        title: '¡Removido!',
-        body: `El Pokémon ${pokemon.name} fue removido de tu Pokedex.`,
-        suggestion: 'Puedes agregar otro Pokémon a tu Pokedex.',
-        panelClass: 'warning',
-      };
-      this.message.showSnackBar(this.snackbar, successData);
-      console.log('Pokemon removed from Pokedex:', pokemon);
-      this.updatePokedexStatus(pokemon.id, false);
-    } else {
-      console.log('Pokemon not in Pokedex. Cannot remove.');
-    }
-  }
-  /**
-   * Método para actualizar el estado de un Pokémon en la tabla.
-   * @param pokemonId - ID del Pokémon a actualizar.
-   * @param inPokedex - Estado del Pokémon en el Pokedex.
-   */
-  updatePokedexStatus(pokemonId: number, inPokedex: boolean): void {
-    const foundPokemon = this.dataSource.data.find(
-      (pokemon) => Number(pokemon.id) === +pokemonId
-    );
-
-    if (foundPokemon) {
-      foundPokemon.inPokedex = inPokedex;
-      this.dataSource.data = [...this.dataSource.data];
-    }
-  }
-  /**
-   * Limpia la memoria.
-   */
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
