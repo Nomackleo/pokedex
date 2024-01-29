@@ -7,16 +7,12 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { Observable, Subject, map, takeUntil, timestamp } from 'rxjs';
 import { Pokemon } from '../../models/pokemons.interfaces';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MessageSnackbarData, PokemonDetails } from '../../models';
-import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { PokedexService } from '../../services/pokedex.service';
-import { MessageSnackbarService } from '../../services/message-snackbar.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-card-pokemon',
@@ -24,14 +20,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./card-pokemon.component.css'],
 })
 export class CardPokemonComponent {
-  private snackbar = inject(MatSnackBar);
-  private pokedexCrud = inject(PokedexCrudService);
   private pokedex = inject(PokedexService);
-  private message = inject(MessageSnackbarService);
   displayedColumns: string[] = ['id', 'name', 'pic', 'pokedex'];
   isMobileView: boolean = false;
   loading: boolean = true;
-  private destroyed$ = new Subject<void>();
+  destroyed$ = new Subject<void>();
 
   @Input() dataSource!: MatTableDataSource<Pokemon>;
   @Input() pokemon$!: Observable<Pokemon[]>;
@@ -45,7 +38,15 @@ export class CardPokemonComponent {
   constructor() {}
 
   ngOnInit(): void {
-    this.pokedex.getPokemonDetailsObservable$().subscribe((pokemon) => pokemon);
+    this.pokedex
+      .getPokemonDetailsObservable$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((pokemon) =>
+        console.log('getPokemonDetailsObservable$', {
+          pokemon,
+          timestamp: new Date().getMilliseconds(),
+        })
+      );
     this.loading = true;
   }
   /**

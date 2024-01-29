@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { PokemonDetails } from '../models';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, timestamp } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PokedexCrudService {
   private pokedex: PokemonDetails[] = [];
-  private resetFavorites = new Subject<void>();
+  private uploadFavorites = new Subject<boolean>();
   private pokedexCountSubject = new BehaviorSubject<number>(0);
 
   private readonly POKEDEX_KEY = 'pokedex';
@@ -34,6 +34,7 @@ export class PokedexCrudService {
   getPokedex(): PokemonDetails[] {
     return this.pokedex;
   }
+
   /** Obtiene un Observable que emite la cantidad actual de Pokémon en el Pokedex. */
   getPokedexCountObservable(): Observable<number> {
     return this.pokedexCountSubject.asObservable();
@@ -44,14 +45,21 @@ export class PokedexCrudService {
    * @returns `true` si se agregó correctamente, `false` si el Pokedex está lleno o el Pokémon ya está en el Pokedex.
    */
   setFavoritePokemon(pokemon: PokemonDetails): boolean {
+    console.log('setFavoritePokemon', {
+      pokedex: this.pokedex,
+      timestamp: new Date().getMilliseconds(),
+    });
+
     const pokemonId = pokemon.id.toString();
 
     // Verifica si el Pokémon ya está en el Pokedex.
     if (this.isFavoritePokemon(pokemonId)) {
-      console.log('Pokemon in Pokedex:', pokemonId);
-      console.log('Está en el pokedex:', this.isFavoritePokemon);
-
-      console.warn(`Pokemon Already Added: ${pokemon.name}`);
+      this.uploadFavorites.next(false);
+      console.warn(`Pokemon Already Added: ${pokemon.name}`, {
+        pokedex: this.pokedex,
+        pokemonId,
+        timestamp: new Date().getMilliseconds(),
+      });
       return false;
     }
 
@@ -59,12 +67,20 @@ export class PokedexCrudService {
     if (this.pokedex.length < this.MAX_POKEMONS_IN_POKEDEX) {
       this.pokedex.push(pokemon);
       this.savePokedexToLocalStorage();
-      this.resetFavorites.next();
+      this.uploadFavorites.next(true);
       this.pokedexCountSubject.next(this.pokedex.length);
-      console.log(`Pokemon Added: ${pokemon.name}`);
+      console.log(`Pokemon Added: ${pokemon.name}`, {
+        pokemonId,
+        pokedex: this.pokedex,
+        timestamp: new Date().getMilliseconds(),
+      });
       return true;
     } else {
-      console.warn('Pokedex is Full. Cannot Add More Pokemon.');
+      this.uploadFavorites.next(false);
+      console.warn('Pokedex is Full. Cannot Add More Pokemon.', {
+        pokedex: this.pokedex,
+        timestamp: new Date().getMilliseconds(),
+      });
       return false;
     }
   }
@@ -76,10 +92,18 @@ export class PokedexCrudService {
     const index = this.pokedex.findIndex((pokemon) => pokemon.id === id);
 
     if (index !== -1) {
+      const removedPokemon = this.pokedex[index];
       this.pokedex.splice(index, 1);
       this.savePokedexToLocalStorage();
-      this.resetFavorites.next();
+      this.isFavoritePokemon(removedPokemon.id.toString());
+      this.uploadFavorites.next(false);
       this.pokedexCountSubject.next(this.pokedex.length);
+      console.log('removeFavoritePokemon', {
+        removedPokemonId: id,
+        remainingPokemons: this.pokedex.length,
+        pokemonsInPokedex: this.pokedex,
+        timestamp: new Date().getMilliseconds(),
+      });
     }
   }
   /**
@@ -90,8 +114,8 @@ export class PokedexCrudService {
   isFavoritePokemon(pokemonId: string): boolean {
     return this.pokedex.some((pokemon) => pokemon.id.toString() === pokemonId);
   }
-  /** Obtiene un Observable que emite eventos cuando se reinician los favoritos. */
-  getResetFavorites(): Observable<void> {
-    return this.resetFavorites.asObservable();
+  /** Obtiene un Observable que emite eventos cuando se reinician los pokemons favoritos. */
+  getResetFavorites(): Observable<boolean> {
+    return this.uploadFavorites.asObservable();
   }
 }

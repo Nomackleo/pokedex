@@ -4,11 +4,13 @@ import {
   Observable,
   Subject,
   catchError,
+  delay,
   map,
   of,
   take,
   takeUntil,
   tap,
+  timestamp,
 } from 'rxjs';
 import { MessageSnackbarData, Pokemon, PokemonDetails } from '../../models';
 import { MatTableDataSource } from '@angular/material/table';
@@ -45,7 +47,7 @@ export class ListComponent {
       .subscribe((pokemon) => {
         pokemon !== null
           ? (this.pokemonDetails = pokemon)
-          : console.log('No se ha seleccionado un ppokméon');
+          : console.log('No se ha seleccionado un pokémon');
       });
     this.pageSize = 10;
     this.allPokemon$
@@ -64,11 +66,17 @@ export class ListComponent {
    */
   checkPokedexStatus() {
     const pokedexData = this.pokedex.getPokedex();
+    console.log('checkPokedexStatus', {
+      pokedexData: pokedexData,
+      timestamp: new Date(),
+    });
+
     if (pokedexData.length > 0) {
-      this.dataSource.data.forEach((pokemon) => {
+      this.dataSource.data.some((pokemon) => {
         pokemon.inPokedex = this.pokedex.isFavoritePokemon(
           pokemon.id.toString()
         );
+        return false;
       });
     }
   }
@@ -113,30 +121,34 @@ export class ListComponent {
     dialogRef.afterClosed().pipe(take(1)).subscribe();
     this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
   }
-/**
+  /**
    * Método para agregar un Pokémon al Pokedex.
    */
   add() {
     this.pokedexAllPokemons
       .getPokemonDetailsObservable$()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntil(this.destroyed$), delay(1000))
       .subscribe((pokemon) => {
         pokemon !== null
           ? this.addToPokedex(pokemon)
-          : console.error('El pokemon es null');
+          : console.error('El pokemon es null', {
+              timestamp: new Date().getMilliseconds(),
+            });
 
-        console.log('Pokemon seleccionado desde list:', pokemon);
+        console.log('Pokemon seleccionado desde list:', {
+          pokemon: pokemon,
+          timestamp: new Date().getMilliseconds(),
+        });
       });
   }
-/**
+  /**
    * Método para agregar un Pokémon al Pokedex y mostrar mensajes.
    * @param pokemon @param pokemon - Pokémon a agregar al Pokedex.
    */
   addToPokedex(pokemon: PokemonDetails) {
     const added = this.pokedex.setFavoritePokemon(pokemon);
-    console.log('Is favorite?', added);
-
     if (added) {
+      this.checkPokedexStatus();
       const succesData: MessageSnackbarData = {
         title: 'Pokedex',
         body: `El Pokémon ${pokemon.name} fue agregado a tu pokedex`,
@@ -163,6 +175,7 @@ export class ListComponent {
   remove() {
     this.pokedexAllPokemons
       .getPokemonDetailsObservable$()
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((pokemon) => {
         pokemon != null
           ? this.removeFromPokedex(pokemon)
@@ -185,8 +198,13 @@ export class ListComponent {
         panelClass: 'warning',
       };
       this.message.showSnackBar(this.snackbar, successData);
-      console.log('Pokemon removed from Pokedex:', pokemon);
-      // this.updatePokedexStatus(pokemon.id, false);
+      console.log('Pokemon removed from Pokedex:', {
+        pokemon: pokemon,
+        pokedex: this.pokedex,
+        timestamp: new Date().getMilliseconds(),
+      });
+      this.checkPokedexStatus();
+      this.updatePokedexStatus(pokemon.id, false);
     } else {
       console.log('Pokemon not in Pokedex. Cannot remove.');
     }

@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment.development';
 import { FecthPokemon, Pokemon } from '../models/pokemons.interfaces';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { PokemonDetails } from '../models/pokemonDetails.interfaces';
+import { PokedexCrudService } from './pokedex-crud.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ import { PokemonDetails } from '../models/pokemonDetails.interfaces';
  */
 export class PokedexService {
   private http = inject(HttpClient);
+  private pokedex = inject(PokedexCrudService);
 
   private baseUrl: string = environment.baseUrl;
   // Crear un Subject para emitir los detalles del Pokemon
@@ -69,4 +71,21 @@ export class PokedexService {
 
     return pokemonList;
   }
+
+  // getPokedexStatus() {
+  //   const allPokemon$ = this.getPokemons$();
+  //   const pokedexData = this.pokedex.getPokedex();
+  //   allPokemon$.pipe(
+  //     map((pokemons) => {
+  //       if (pokedexData.length > 0) {
+  //         pokemons.some((pokemon) => {
+  //           pokemon.inPokedex = this.pokedex.isFavoritePokemon(
+  //             pokemon.id.toString()
+  //           );
+  //           return false;
+  //         });
+  //       }
+  //     })
+  //   );
+  // }
 }
