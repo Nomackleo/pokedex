@@ -4,7 +4,7 @@
   [dataSource]="dataSource"
   [pageSize]="pageSize"
   (pokemonEmitter)="selectPokemon($event)"
-  (addPokemon)="add()"
-  (removePokemon)="remove()"
+  (addPokemon)="add($event)"
+  (removePokemon)="remove($event)"
   class="card-list animate__animated animate__fadeIn"
 ></app-card-pokemon>

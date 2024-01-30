@@ -4,13 +4,11 @@ import {
   Observable,
   Subject,
   catchError,
-  delay,
   map,
   of,
   take,
   takeUntil,
   tap,
-  timestamp,
 } from 'rxjs';
 import { MessageSnackbarData, Pokemon, PokemonDetails } from '../../models';
 import { MatTableDataSource } from '@angular/material/table';
@@ -26,18 +24,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./list.component.css'],
 })
 export class ListComponent {
-  readonly pokedexAllPokemons = inject(PokedexService);
-  readonly pokedex = inject(PokedexCrudService);
-  readonly dialog = inject(MatDialog);
-  private snackbar = inject(MatSnackBar);
-  private message = inject(MessageSnackbarService);
-
   pageSize!: number;
   allPokemon$!: Observable<Pokemon[]>;
   selectedPokemon: PokemonDetails[] = [];
   pokemonDetails!: PokemonDetails;
   destroyed$ = new Subject<void>();
   dataSource!: MatTableDataSource<Pokemon>;
+  private uploadFavorites = new Subject<boolean>();
+
+  readonly pokedexAllPokemons = inject(PokedexService);
+  readonly pokedex = inject(PokedexCrudService);
+  readonly dialog = inject(MatDialog);
+  private snackbar = inject(MatSnackBar);
+  private message = inject(MessageSnackbarService);
 
   ngOnInit(): void {
     this.allPokemon$ = this.pokedexAllPokemons.getPokemons$();
@@ -85,7 +84,6 @@ export class ListComponent {
    * @param pokemon - Pokémon seleccionado.
    */
   selectPokemon(pokemon: Pokemon) {
-    this.selectedPokemon = [];
     this.pokedexAllPokemons
       .getPokemonDetails$(pokemon.name)
       .pipe(
@@ -96,8 +94,7 @@ export class ListComponent {
               stats: [...details.stats],
               types: [...details.types],
             };
-            this.selectedPokemon.push(pokemonDetails);
-            this.openDetails(this.selectedPokemon[0]);
+            this.openDetails(pokemonDetails);
           },
           catchError((err: Error) => {
             console.error('Error fetching Pokemon details', err);
@@ -124,22 +121,26 @@ export class ListComponent {
   /**
    * Método para agregar un Pokémon al Pokedex.
    */
-  add() {
+  add(pokemon: Pokemon) {
     this.pokedexAllPokemons
-      .getPokemonDetailsObservable$()
-      .pipe(takeUntil(this.destroyed$), delay(1000))
-      .subscribe((pokemon) => {
-        pokemon !== null
-          ? this.addToPokedex(pokemon)
-          : console.error('El pokemon es null', {
-              timestamp: new Date().getMilliseconds(),
-            });
-
-        console.log('Pokemon seleccionado desde list:', {
-          pokemon: pokemon,
-          timestamp: new Date().getMilliseconds(),
-        });
-      });
+      .getPokemonDetails$(pokemon.name)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (details) => {
+          const pokemonDetails: PokemonDetails = {
+            ...details,
+            stats: [...details.stats],
+            types: [...details.types],
+          };
+          this.selectedPokemon.push(pokemonDetails);
+          this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
+          this.addToPokedex(pokemonDetails);
+        },
+        catchError((err: Error) => {
+          console.error('Error fetching Pokemon details', err);
+          return of(null);
+        })
+      );
   }
   /**
    * Método para agregar un Pokémon al Pokedex y mostrar mensajes.
@@ -156,7 +157,8 @@ export class ListComponent {
       };
       this.message.showSnackBar(this.snackbar, succesData);
       console.log('Pokemon added to Pokedex:', pokemon);
-      this.updatePokedexStatus(pokemon.id, true);
+      this.uploadFavorites.next(true);
+      this.updatePokedexStatus(pokemon.id);
     } else {
       const errorData: MessageSnackbarData = {
         title: 'Ooops',
@@ -172,14 +174,18 @@ export class ListComponent {
   /**
    * Método para remover un Pokémon del Pokedex.
    */
-  remove() {
+  remove(pokemon: Pokemon) {
     this.pokedexAllPokemons
-      .getPokemonDetailsObservable$()
+      .getPokemonDetails$(pokemon.name)
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((pokemon) => {
-        pokemon != null
-          ? this.removeFromPokedex(pokemon)
-          : console.error('Error remove');
+      .subscribe((details) => {
+        const pokemonDetails: PokemonDetails = {
+          ...details,
+          stats: [...details.stats],
+          types: [...details.types],
+        };
+        this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
+        this.removeFromPokedex(pokemonDetails);
       });
   }
   /**
@@ -204,7 +210,9 @@ export class ListComponent {
         timestamp: new Date().getMilliseconds(),
       });
       this.checkPokedexStatus();
-      this.updatePokedexStatus(pokemon.id, false);
+
+      this.uploadFavorites.next(false);
+      this.updatePokedexStatus(pokemon.id);
     } else {
       console.log('Pokemon not in Pokedex. Cannot remove.');
     }
@@ -214,15 +222,19 @@ export class ListComponent {
    * @param pokemonId - ID del Pokémon a actualizar.
    * @param inPokedex - Estado del Pokémon en el Pokedex.
    */
-  updatePokedexStatus(pokemonId: number, inPokedex: boolean): void {
+  updatePokedexStatus(pokemonId: number): void {
     const foundPokemon = this.dataSource.data.find(
       (pokemon) => Number(pokemon.id) === +pokemonId
     );
-
-    if (foundPokemon) {
-      foundPokemon.inPokedex = inPokedex;
-      this.dataSource.data = [...this.dataSource.data];
-    }
+    this.pokedex
+      .getResetFavorites()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((inPokedex) => {
+        if (foundPokemon) {
+          foundPokemon.inPokedex = inPokedex;
+          this.dataSource.data = [...this.dataSource.data];
+        }
+      });
   }
 
   ngOnDestroy(): void {

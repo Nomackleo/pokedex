@@ -62,7 +62,7 @@
             mat-mini-fab
             color="primary"
             matTooltip="Agregar pokemon a pokedex"
-            (click)="add()"
+            (click)="add($event, row)"
             [disabled]="row.inPokedex"
           >
             <mat-icon>add</mat-icon>
@@ -71,7 +71,7 @@
             mat-mini-fab
             color="warn"
             matTooltip="Quitar pokemon de pokedex"
-            (click)="remove()"
+            (click)="remove($event, row)"
             [disabled]="!row.inPokedex"
           >
             <mat-icon>remove</mat-icon>

@@ -72,20 +72,4 @@ export class PokedexService {
     return pokemonList;
   }
 
-  // getPokedexStatus() {
-  //   const allPokemon$ = this.getPokemons$();
-  //   const pokedexData = this.pokedex.getPokedex();
-  //   allPokemon$.pipe(
-  //     map((pokemons) => {
-  //       if (pokedexData.length > 0) {
-  //         pokemons.some((pokemon) => {
-  //           pokemon.inPokedex = this.pokedex.isFavoritePokemon(
-  //             pokemon.id.toString()
-  //           );
-  //           return false;
-  //         });
-  //       }
-  //     })
-  //   );
-  // }
 }

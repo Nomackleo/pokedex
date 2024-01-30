@@ -30,8 +30,8 @@ export class CardPokemonComponent {
   @Input() pokemon$!: Observable<Pokemon[]>;
   @Input() pageSize!: number;
   @Output() pokemonEmitter = new EventEmitter<Pokemon>();
-  @Output() addPokemon = new EventEmitter<void>();
-  @Output() removePokemon = new EventEmitter<void>();
+  @Output() addPokemon = new EventEmitter<Pokemon>();
+  @Output() removePokemon = new EventEmitter<Pokemon>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -87,12 +87,14 @@ export class CardPokemonComponent {
     }
   }
 
-  add() {
-    this.addPokemon.emit();
+  add(e: Event, pokemon: Pokemon) {
+    this.addPokemon.emit(pokemon);
+    e.stopPropagation();
   }
 
-  remove() {
-    this.removePokemon.emit();
+  remove(e: Event, pokemon: Pokemon) {
+    this.removePokemon.emit(pokemon);
+    e.stopPropagation();
   }
 
   ngOnDestroy(): void {
