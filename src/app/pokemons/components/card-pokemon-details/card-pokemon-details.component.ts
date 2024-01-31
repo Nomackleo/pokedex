@@ -5,6 +5,7 @@ import { MessageSnackbarData, PokemonDetails } from '../../models';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-card-pokemon-details',
@@ -12,6 +13,8 @@ import { MessageSnackbarService } from '../../services/message-snackbar.service'
   styleUrls: ['./card-pokemon-details.component.css'],
 })
 export class CardPokemonDetailsComponent {
+  private uploadFavorites = new Subject<boolean>();
+
   private snackbar = inject(MatSnackBar);
   private pokedexCrud = inject(PokedexCrudService);
   readonly dialogRef = inject(MatDialogRef<CardPokemonDetailsComponent>);
@@ -26,6 +29,9 @@ export class CardPokemonDetailsComponent {
 
   ngOnInit(): void {
     this.updatePokedexStatus(this.pokemonDetails);
+    this.pokedexCrud
+      .getResetFavorites()
+      .subscribe((inPokedex) => (this.inPokedex = inPokedex));
   }
   add() {
     const addedSuccessfully = this.pokedexCrud.setFavoritePokemon(
@@ -51,16 +57,15 @@ export class CardPokemonDetailsComponent {
   }
   /**
    * Método para actualizar el estado de un Pokémon en el Pokedex.
+   * Emite un valor booleano, para identificar el Pokémon en el Pokedex.
    * @param pokemonDetails - Detalles del Pokémon.
-   * @returns Estado del Pokémon en el Pokedex.
    */
-  updatePokedexStatus(pokemonDetails: PokemonDetails): boolean {
+
+  updatePokedexStatus(pokemonDetails: PokemonDetails) {
     const pokedexData = this.pokedexCrud.getPokedex();
     const inPokedex = pokedexData.some(
       (pokemon) => pokemon.id === pokemonDetails.id
     );
-
-    console.log('inPokedex?:', inPokedex);
-    return (this.inPokedex = inPokedex);
+    this.uploadFavorites.next(inPokedex);
   }
 }

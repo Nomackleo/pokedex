@@ -30,7 +30,6 @@ export class ListComponent {
   pokemonDetails!: PokemonDetails;
   destroyed$ = new Subject<void>();
   dataSource!: MatTableDataSource<Pokemon>;
-  private uploadFavorites = new Subject<boolean>();
 
   readonly pokedexAllPokemons = inject(PokedexService);
   readonly pokedex = inject(PokedexCrudService);
@@ -65,11 +64,6 @@ export class ListComponent {
    */
   checkPokedexStatus() {
     const pokedexData = this.pokedex.getPokedex();
-    console.log('checkPokedexStatus', {
-      pokedexData: pokedexData,
-      timestamp: new Date(),
-    });
-
     if (pokedexData.length > 0) {
       this.dataSource.data.some((pokemon) => {
         pokemon.inPokedex = this.pokedex.isFavoritePokemon(
@@ -106,7 +100,7 @@ export class ListComponent {
       .subscribe();
   }
   /**
-   * Método para enviar la data al componente hijo por medio de dialodRef.
+   * Método para enviar la data al componente 'CardPokemonDetailsComponent' hijo por medio de dialodRef.
    * @param pokemonDetails - Detalles del Pokémon.
    */
   openDetails(pokemonDetails: PokemonDetails) {
@@ -132,7 +126,6 @@ export class ListComponent {
             stats: [...details.stats],
             types: [...details.types],
           };
-          this.selectedPokemon.push(pokemonDetails);
           this.pokedexAllPokemons.pokemonDetailsSubject.next(pokemonDetails);
           this.addToPokedex(pokemonDetails);
         },
@@ -143,7 +136,7 @@ export class ListComponent {
       );
   }
   /**
-   * Método para agregar un Pokémon al Pokedex y mostrar mensajes.
+   * Método para agregar un Pokémon al Pokedex y mostrar mensajes de verificación.
    * @param pokemon @param pokemon - Pokémon a agregar al Pokedex.
    */
   addToPokedex(pokemon: PokemonDetails) {
@@ -156,8 +149,11 @@ export class ListComponent {
         panelClass: 'success',
       };
       this.message.showSnackBar(this.snackbar, succesData);
-      console.log('Pokemon added to Pokedex:', pokemon);
-      this.uploadFavorites.next(true);
+      console.log('Pokemon added to Pokedex:', {
+        title: pokemon,
+        body: `El Pokémon ${pokemon.name} fue agregado a tu pokedex`,
+        time: new Date().toLocaleString(),
+      });
       this.updatePokedexStatus(pokemon.id);
     } else {
       const errorData: MessageSnackbarData = {
@@ -210,8 +206,6 @@ export class ListComponent {
         timestamp: new Date().getMilliseconds(),
       });
       this.checkPokedexStatus();
-
-      this.uploadFavorites.next(false);
       this.updatePokedexStatus(pokemon.id);
     } else {
       console.log('Pokemon not in Pokedex. Cannot remove.');
