@@ -16,7 +16,6 @@ export class PokedexCrudService {
   constructor() {
     this.loadPokedexFromLocalStorage();
     this.pokedexCountSubject.next(this.pokedexSubject.value.length);
-    console.log('service', this.getPokedex$());
   }
   /** Carga el Pokedex desde el almacenamiento local. */
   private loadPokedexFromLocalStorage(): void {
@@ -56,7 +55,7 @@ export class PokedexCrudService {
 
     // Verifica si el Pokémon ya está en el Pokedex.
     if (this.isFavoritePokemon(pokemonId)) {
-      this.uploadFavorites.next(false);
+      // this.uploadFavorites.next(false);
       console.warn(`Pokemon Already Added: ${pokemon.name}`, {
         pokedex: this.pokedexSubject.value,
         pokemonId,

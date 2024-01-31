@@ -41,12 +41,7 @@ export class CardPokemonComponent {
     this.pokedex
       .getPokemonDetailsObservable$()
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((pokemon) =>
-        console.log('getPokemonDetailsObservable$', {
-          pokemon,
-          timestamp: new Date().getMilliseconds(),
-        })
-      );
+      .subscribe();
     this.loading = true;
   }
   /**

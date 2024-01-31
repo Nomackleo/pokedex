@@ -5,7 +5,7 @@ import { MessageSnackbarData, PokemonDetails } from '../../models';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, timestamp } from 'rxjs';
 
 @Component({
   selector: 'app-card-pokemon-details',
@@ -30,9 +30,14 @@ export class CardPokemonDetailsComponent {
 
   ngOnInit(): void {
     this.updatePokedexStatus(this.pokemonDetails);
-    this.pokedexCrud
-      .getResetFavorites()
-      .subscribe((inPokedex) => (this.inPokedex = inPokedex));
+    this.pokedexCrud.getResetFavorites().subscribe((inPokedex) => {
+      this.inPokedex = inPokedex;
+      console.log('CardPokemonDetail', {
+        inPokedex,
+        inPokedexBoolean: this.inPokedex,
+        timestamp: new Date().toLocaleString(),
+      });
+    });
   }
   add() {
     const addedSuccessfully = this.pokedexCrud.setFavoritePokemon(
@@ -71,6 +76,17 @@ export class CardPokemonDetailsComponent {
           (pokemon) => pokemon.id === pokemonDetails.id
         );
         this.uploadFavorites.next(inPokedex);
+        this.inPokedex = inPokedex;
+        console.log('PokedeStatus', {
+          pokemonDetails,
+          inPokedex,
+          timestamp: new Date().toLocaleString(),
+        });
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
