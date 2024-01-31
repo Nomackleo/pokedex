@@ -63,15 +63,17 @@ export class ListComponent {
    * Método para verificar el estado del Pokedex y actualizar los Pokémon en la tabla.
    */
   checkPokedexStatus() {
-    const pokedexData = this.pokedex.getPokedex();
-    if (pokedexData.length > 0) {
-      this.dataSource.data.some((pokemon) => {
-        pokemon.inPokedex = this.pokedex.isFavoritePokemon(
-          pokemon.id.toString()
-        );
-        return false;
-      });
-    }
+    this.pokedex.getPokedex$().subscribe((pokedexData) => {
+      if (pokedexData.length > 0) {
+        this.dataSource.data.some((pokemon) => {
+          pokemon.inPokedex = this.pokedex.isFavoritePokemon(
+            pokemon.id.toString()
+          );
+          return false;
+        });
+      }
+    });
+    const pokedexData = this.pokedex.getPokedex$();
   }
   /**
    * Método para seleccionar un Pokémon y mostrar sus detalles.

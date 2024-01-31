@@ -3,6 +3,7 @@ import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MessageSnackbarData, PokemonDetails } from '../../models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pokedex',
@@ -19,7 +20,9 @@ export class PokedexComponent {
   selectedPokemon?: PokemonDetails;
 
   ngOnInit(): void {
-    this.pokedex = this.pokedexCrud.getPokedex();
+    this.pokedexCrud
+      .getPokedex$()
+      .subscribe((pokedex) => (this.pokedex = pokedex));
     console.log(this.pokedex);
   }
   /**

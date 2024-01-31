@@ -5,7 +5,7 @@ import { MessageSnackbarData, PokemonDetails } from '../../models';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-card-pokemon-details',
@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 })
 export class CardPokemonDetailsComponent {
   private uploadFavorites = new Subject<boolean>();
+  destroyed$ = new Subject<void>();
 
   private snackbar = inject(MatSnackBar);
   private pokedexCrud = inject(PokedexCrudService);
@@ -62,10 +63,14 @@ export class CardPokemonDetailsComponent {
    */
 
   updatePokedexStatus(pokemonDetails: PokemonDetails) {
-    const pokedexData = this.pokedexCrud.getPokedex();
-    const inPokedex = pokedexData.some(
-      (pokemon) => pokemon.id === pokemonDetails.id
-    );
-    this.uploadFavorites.next(inPokedex);
+    this.pokedexCrud
+      .getPokedex$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((pokedexData) => {
+        const inPokedex = pokedexData.some(
+          (pokemon) => pokemon.id === pokemonDetails.id
+        );
+        this.uploadFavorites.next(inPokedex);
+      });
   }
 }

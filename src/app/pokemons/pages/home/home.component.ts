@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { PokedexService } from '../../services/pokedex.service';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
-import { Subscription, count } from 'rxjs';
+import { Subject, Subscription, count, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,14 +12,20 @@ export class HomeComponent {
   private pokedexCrud = inject(PokedexCrudService);
   matBadge!: number;
   private pokedexCountSubscription: Subscription = new Subscription();
+  destroyed$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.matBadge = this.pokedexCrud.getPokedex().length;
     this.pokedexCountSubscription = this.pokedexCrud
-      .getPokedexCountObservable()
-      .subscribe((count) => {
-        this.matBadge = count;
+      .getPokedex$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((pokedexData) => {
+        this.matBadge = pokedexData.length;
       });
+    // this.pokedexCountSubscription = this.pokedexCrud
+    //   .getPokedexCountObservable()
+    //   .subscribe((count) => {
+    //     this.matBadge = count;
+    //   });
   }
 
   ngOnDestroy(): void {
