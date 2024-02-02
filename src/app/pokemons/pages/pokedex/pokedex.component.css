@@ -1,29 +1,50 @@
 .pokedex-container {
   width: 100;
   display: grid;
-  grid-template-rows: 180px 1fr;
+  place-content: center;
+  grid-template-rows: 240px 1fr;
   grid-template-columns: 1fr;
   gap: 20px; /* Ajusta el espacio entre las tarjetas según tus preferencias */
 }
 .header {
   grid-row: 1;
-  text-align: center;
-  margin-bottom: 60px;
+  display: grid;
+  grid-template-rows: 61.8% 38.2%;
+  grid-template-columns: 1fr;
   box-sizing: border-box;
 }
 .header img {
+  grid-row: 1;
+  justify-self: center;
+  margin-bottom: 60px;
   height: 150px;
   object-fit: cover;
   object-position: center;
 }
-
+.header button {
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  width: 120px;
+}
 .cards {
   grid-row: 2;
   display: grid;
+  justify-self: center;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-
+.mat-mdc-raised-button.mat-unthemed {
+  --mdc-protected-button-container-color: #004bad;
+  --mdc-protected-button-label-text-color: #fff;
+}
+.mat-mdc-outlined-button {
+  background-color: rgba(190, 65, 128, 0.21);
+  color: #be4180;
+}
+.mat-mdc-outlined-button.mat-unthemed {
+  --mdc-outlined-button-label-text-color: #be4180;
+}
 @media (max-width: 930px) {
   .cards {
     grid-template-columns: repeat(2, 1fr);
@@ -32,6 +53,7 @@
 @media (max-width: 576px) {
   .cards {
     grid-template-columns: 1fr;
+    align-items: center;
   }
 
   .header img {
@@ -42,28 +64,25 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 380px;
   max-width: 400px;
   border-radius: 15px;
   box-shadow: 0 0 11px #cacaca;
   padding: 30px;
-  background-color: rgba(255, 0, 255, 0.1) !important;
-  border: 6px solid #7b1fa2;
+  background-color: rgba(245, 201, 59, 0.9) !important;
+  border: 6px solid #004bad;
   border-radius: 15px;
-}
-
-button {
-  margin: 0 12px;
 }
 
 .mat-mdc-card-title {
   font-size: 28px;
-  color: #69f0ae;
+  color: #965ee1;
   text-align: center;
   margin-bottom: 2rem;
 }
 .mat-mdc-card-subtitle {
   text-decoration: none;
-  color: #cddc39;
+  color: #004bad;
   font-size: 1.5rem;
   text-align: center;
   padding: 1rem;
@@ -90,14 +109,14 @@ button {
 }
 li {
   list-style-type: none;
-  color: white;
+  color: #004bad;
 }
 ::marker {
   content: none;
   margin-right: 0;
 }
 span {
-  color: #cacaca;
+  color: #01a1e0;
 }
 .pokemon-in-pokedex {
   font-weight: bold;

@@ -1,6 +1,7 @@
 <div class="pokedex-container animate__animated animate__fadeIn">
   <div class="header">
     <img class="memo" src="assets/NgPokedex.png" />
+    <button mat-raised-button routerLink="../list">Pokemons</button>
   </div>
   <div class="cards">
     <mat-card class="card-pokemon" *ngFor="let pokemonDetails of pokedex">
@@ -37,7 +38,6 @@
             mat-stroked-button
             (click)="remove(pokemonDetails.id)"
             matTooltip="Remover pokemon del pokedex"
-            color="accent"
           >
             <mat-icon>remove</mat-icon>
             Remover

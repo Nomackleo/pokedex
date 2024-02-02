@@ -1,3 +1,8 @@
 .container {
   margin: 16px;
 }
+
+.mat-badge-accent {
+  --mat-badge-background-color: #f5c93b;
+  --mat-badge-text-color: #004bad;
+}

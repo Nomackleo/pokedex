@@ -1,13 +1,15 @@
 .card-container {
-  border: 6px solid #7b1fa2;
+  border: 6px solid #004bad;
   border-radius: 15px;
-  /* background-color: #69f0ae; */
 }
 .mdc-dialog__container {
   border-radius: 15px;
 }
 .card-pokemon {
   display: flex;
+  /* background-color: rgba(0, 75, 173, .21); */
+  background-color: rgba(245, 201, 59, 0.6) !important;
+
   justify-content: center;
   align-items: center;
   max-width: 400px;
@@ -15,21 +17,25 @@
   box-shadow: 0 0 11px #cacaca;
   padding: 30px;
 }
-
 button {
-  margin:  0 12px;
+  margin: 12px 0;
 }
-
-
+.mat-mdc-outlined-button.mat-accent {
+  --mdc-outlined-button-label-text-color: #004bad;
+}
+.mat-mdc-outlined-button.mat-accent {
+  --mat-mdc-button-persistent-ripple-color: #004bad;
+  --mat-mdc-button-ripple-color: rgba(105, 240, 174, 0.1);
+}
 .mat-mdc-card-title {
   font-size: 28px;
-  color: #69f0ae;
+  color: #965ee1;
   text-align: center;
   margin-bottom: 2rem;
 }
 .mat-mdc-card-subtitle {
   text-decoration: none;
-  color: #cddc39;
+  color: #004bad;
   font-size: 1.5rem;
   text-align: center;
   padding: 1rem;
@@ -56,16 +62,17 @@ img {
 }
 li {
   list-style-type: none;
-  color: white;
+  color: #004bad;
 }
 ::marker {
   content: none;
   margin-right: 0;
 }
 span {
-  color: #cacaca;
+  font-weight: bold;
+  color: #0289be;
 }
 .pokemon-in-pokedex {
   font-weight: bold;
-  background-color: rgba(255, 0, 255, 0.1) !important;
+  background-color: rgba(245, 201, 59, 0.9) !important;
 }
