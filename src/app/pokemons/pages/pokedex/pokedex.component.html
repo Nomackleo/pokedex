@@ -1,9 +1,15 @@
-<div class="pokedex-container animate__animated animate__fadeIn">
+<div class="pokedex__container animate__animated animate__fadeIn">
   <div class="header">
-    <img class="memo" src="assets/NgPokedex.png" />
+    <img
+      fetchpriority="high"
+      height="150px"
+      class="header__image"
+      src="assets/NgPokedex.png"
+      alt="Pokedex"
+    />
     <button mat-raised-button routerLink="../list">Pokemons</button>
   </div>
-  <div class="cards">
+  <div class="cards__container">
     <mat-card class="card-pokemon" *ngFor="let pokemonDetails of pokedex">
       <mat-card-header>
         <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
@@ -11,9 +17,15 @@
           {{ pokemonDetails.order }}
         </mat-card-subtitle>
       </mat-card-header>
-      <img mat-card-image [src]="pokemonDetails.pic" alt="Foto de un Pokemon" />
+      <img
+        mat-card-image
+        height="210px"
+        [src]="pokemonDetails.pic"
+        alt="Foto de {{ pokemonDetails.name }}"
+        loading="lazy"
+      />
       <mat-card-content>
-        <div class="type">
+        <div class="cards__type">
           <mat-chip-set aria-label="Tipo de pokemon">
             <mat-chip *ngFor="let type of pokemonDetails.types">{{
               type.type.name | uppercase

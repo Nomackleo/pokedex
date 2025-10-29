@@ -38,7 +38,7 @@
       <ng-container matColumnDef="pic">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Foto</th>
         <td mat-cell *matCellDef="let row">
-          <img src="{{ row.pic }}" alt="Imagen de {{ row.name }}" />
+          <img src="{{ row.pic }}" alt="Imagen de {{ row.name }}" loading="lazy"/>
         </td>
       </ng-container>
 

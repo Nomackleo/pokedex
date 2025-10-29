@@ -18,10 +18,10 @@
   padding: 30px;
 }
 button {
-  margin: 12px 0;
+  margin: 0 12px;
 }
 .mat-mdc-outlined-button.mat-accent {
-  --mdc-outlined-button-label-text-color: #004bad;
+  --mdc-outlined-button-label-text-color: #d9e4f2;
 }
 .mat-mdc-outlined-button.mat-accent {
   --mat-mdc-button-persistent-ripple-color: #004bad;

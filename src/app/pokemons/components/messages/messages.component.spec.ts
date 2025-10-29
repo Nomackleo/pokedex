@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MAT_SNACK_BAR_DATA, MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
 import { MessagesComponent } from './messages.component';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('MessagesComponent', () => {
   let component: MessagesComponent;
@@ -8,7 +9,12 @@ describe('MessagesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MessagesComponent]
+      imports: [MatSnackBarModule, MatIconModule],
+      declarations: [MessagesComponent],
+      providers: [
+        { provide: MAT_SNACK_BAR_DATA, useValue: {} },
+        { provide: MatSnackBarRef, useValue: {} }
+      ]
     });
     fixture = TestBed.createComponent(MessagesComponent);
     component = fixture.componentInstance;

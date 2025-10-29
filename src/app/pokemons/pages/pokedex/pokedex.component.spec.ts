@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PokedexComponent } from './pokedex.component';
 
 describe('PokedexComponent', () => {
@@ -8,6 +8,7 @@ describe('PokedexComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [MatSnackBarModule],
       declarations: [PokedexComponent]
     });
     fixture = TestBed.createComponent(PokedexComponent);

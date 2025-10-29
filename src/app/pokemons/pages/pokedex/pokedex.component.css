@@ -1,10 +1,10 @@
-.pokedex-container {
+.pokedex__container {
   width: 100;
   display: grid;
   place-content: center;
   grid-template-rows: 240px 1fr;
   grid-template-columns: 1fr;
-  gap: 20px; /* Ajusta el espacio entre las tarjetas según tus preferencias */
+  gap: 20px;
 }
 .header {
   grid-row: 1;
@@ -13,13 +13,9 @@
   grid-template-columns: 1fr;
   box-sizing: border-box;
 }
-.header img {
+.header__image {
   grid-row: 1;
   justify-self: center;
-  margin-bottom: 60px;
-  height: 150px;
-  object-fit: cover;
-  object-position: center;
 }
 .header button {
   grid-row: 2;
@@ -27,7 +23,7 @@
   justify-self: center;
   width: 120px;
 }
-.cards {
+.cards__container {
   grid-row: 2;
   display: grid;
   justify-self: center;
@@ -46,17 +42,17 @@
   --mdc-outlined-button-label-text-color: #be4180;
 }
 @media (max-width: 930px) {
-  .cards {
+  .cards__container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (max-width: 576px) {
-  .cards {
+  .cards__container {
     grid-template-columns: 1fr;
     align-items: center;
   }
 
-  .header img {
+  .header__image {
     height: 120px;
   }
 }
@@ -76,7 +72,7 @@
 
 .mat-mdc-card-title {
   font-size: 28px;
-  color: #965ee1;
+  color: #6f45a5;
   text-align: center;
   margin-bottom: 2rem;
 }
@@ -87,13 +83,12 @@
   text-align: center;
   padding: 1rem;
 }
-.type {
+.cards__type {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .mat-mdc-card-image {
-  height: 210px;
   max-width: 210px;
   object-fit: cover;
 }

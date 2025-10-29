@@ -9,7 +9,12 @@
         {{ pokemonDetails.order }}
       </mat-card-subtitle>
     </mat-card-header>
-    <img mat-card-image [src]="pokemonDetails.pic" alt="Foto de un Pokemon" />
+    <img
+      mat-card-image
+      [src]="pokemonDetails.pic"
+      alt="Foto de {{ pokemonDetails.name }}"
+      loading="lazy"
+    />
     <mat-card-content>
       <div class="type">
         <mat-chip-set aria-label="Tipo de pokemon">
