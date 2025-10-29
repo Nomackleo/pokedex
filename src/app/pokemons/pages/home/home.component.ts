@@ -1,34 +1,29 @@
-import { Component, inject } from '@angular/core';
-import { PokedexService } from '../../services/pokedex.service';
+import { Component, computed, inject } from '@angular/core';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
-import { Subject, Subscription, count, takeUntil } from 'rxjs';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  standalone: true,
+  imports: [
+    RouterModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatBadgeModule,
+  ],
 })
 export class HomeComponent {
   private pokedexCrud = inject(PokedexCrudService);
-  matBadge!: number;
-  private pokedexCountSubscription: Subscription = new Subscription();
-  destroyed$ = new Subject<void>();
-
-  ngOnInit(): void {
-    this.pokedexCountSubscription = this.pokedexCrud
-      .getPokedex$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((pokedexData) => {
-        this.matBadge = pokedexData.length;
-      });
-    // this.pokedexCountSubscription = this.pokedexCrud
-    //   .getPokedexCountObservable()
-    //   .subscribe((count) => {
-    //     this.matBadge = count;
-    //   });
-  }
-
-  ngOnDestroy(): void {
-    this.pokedexCountSubscription.unsubscribe();
-  }
+  matBadge = this.pokedexCrud.pokedexCount;
 }

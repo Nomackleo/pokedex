@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   HostListener,
@@ -7,17 +8,38 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { Observable, Subject, map, takeUntil, timestamp } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Pokemon } from '../../models/pokemons.interfaces';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PokedexService } from '../../services/pokedex.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-card-pokemon',
   templateUrl: './card-pokemon.component.html',
   styleUrls: ['./card-pokemon.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
 })
 export class CardPokemonComponent {
   private pokedex = inject(PokedexService);
@@ -38,41 +60,24 @@ export class CardPokemonComponent {
   constructor() {}
 
   ngOnInit(): void {
-    this.pokedex
-      .getPokemonDetailsObservable$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe();
     this.loading = true;
   }
-  /**
-   * Método que se ejecuta después de que se han inicializado las vistas.
-   * Configura el paginador y determina si la vista es móvil.
-   */
+
   ngAfterViewInit(): void {
     this.isMobileView = window.innerWidth < 625;
   }
-  /**
-   * Método para seleccionar un Pokémon y emitir un evento.
-   * @param pokemon - Pokémon seleccionado.
-   */
+
   selectPokemon(pokemon: Pokemon) {
     this.pokemonEmitter.emit(pokemon);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  /**
-   * Manejador del evento de redimensionamiento de la ventana.
-   * @param event - Evento de redimensionamiento.
-   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.isMobileView = window.innerWidth < 625;
   }
-  /**
-   * Método para aplicar un filtro a la tabla.
-   * @param event - Evento de entrada.
-   */
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();

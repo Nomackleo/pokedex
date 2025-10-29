@@ -10,7 +10,7 @@
     <button mat-raised-button routerLink="../list">Pokemons</button>
   </div>
   <div class="cards__container">
-    <mat-card class="card-pokemon" *ngFor="let pokemonDetails of pokedex">
+    <mat-card class="card-pokemon" *ngFor="let pokemonDetails of pokedex()">
       <mat-card-header>
         <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
         <mat-card-subtitle>

@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { ListComponent } from './pages/list/list.component';
 import { PokedexComponent } from './pages/pokedex/pokedex.component';
 
-const routes: Routes = [
+export const POKEMONS_ROUTES: Routes = [
   {
     path: '',
     component: HomeComponent,
@@ -15,9 +14,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class PokemonsRoutingModule {}

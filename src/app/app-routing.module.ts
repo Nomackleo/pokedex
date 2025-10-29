@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'pokemons',
     loadChildren: () =>
-      import('./pokemons/pokemons.module').then((m) => m.PokemonsModule),
+      import('./pokemons/pokemons.routes').then((m) => m.POKEMONS_ROUTES),
   },
   {
     path: '**',

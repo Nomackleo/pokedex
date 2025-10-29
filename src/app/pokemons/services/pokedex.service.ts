@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { FecthPokemon, Pokemon } from '../models/pokemons.interfaces';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { PokemonDetails } from '../models/pokemonDetails.interfaces';
 import { PokedexCrudService } from './pokedex-crud.service';
 
@@ -17,10 +17,8 @@ export class PokedexService {
   private pokedex = inject(PokedexCrudService);
 
   private baseUrl: string = environment.baseUrl;
-  // Crear un Subject para emitir los detalles del Pokemon
-  public pokemonDetailsSubject = new BehaviorSubject<PokemonDetails | null>(
-    null
-  );
+  // Crear un Signal para emitir los detalles del Pokemon
+  public pokemonDetails = signal<PokemonDetails | null>(null);
   /**
    * Obtiene un observable que emite la lista de Pokémon.
    * @returns Observable que emite la lista de Pokémon.
@@ -30,15 +28,9 @@ export class PokedexService {
 
     return this.http.get<FecthPokemon>(url).pipe(map(this.showAPokemon));
   }
+
   /**
-   * Obtiene un observable que emite los detalles del Pokémon cuando se obtienen.
-   * @returns Observable que emite los detalles del Pokémon.
-   */
-  getPokemonDetailsObservable$(): Observable<PokemonDetails | null> {
-    return this.pokemonDetailsSubject.asObservable();
-  }
-  /**
-   * Obtiene un observable que emite los detalles de un Pokémon específico.
+   * Obtiene un observable que emite los detalles de un Pokémon específico y actualiza el signal.
    * @param name - Nombre del Pokémon.
    * @returns Observable que emite los detalles del Pokémon.
    */
@@ -48,7 +40,8 @@ export class PokedexService {
       map((data) => ({
         ...data,
         pic: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`,
-      }))
+      })),
+      tap((pokemon) => this.pokemonDetails.set(pokemon))
     );
   }
   /**

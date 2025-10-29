@@ -1,44 +1,61 @@
-import { Component, EventEmitter, Inject, Output, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Output,
+  computed,
+  inject,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { Dialog } from '@angular/cdk/dialog';
 import { MessageSnackbarData, PokemonDetails } from '../../models';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
-import { Subject, takeUntil, timestamp } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-card-pokemon-details',
   templateUrl: './card-pokemon-details.component.html',
   styleUrls: ['./card-pokemon-details.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDialogModule,
+  ],
 })
 export class CardPokemonDetailsComponent {
-  private uploadFavorites = new Subject<boolean>();
-  destroyed$ = new Subject<void>();
-
   private snackbar = inject(MatSnackBar);
   private pokedexCrud = inject(PokedexCrudService);
   readonly dialogRef = inject(MatDialogRef<CardPokemonDetailsComponent>);
   readonly dialog = inject(Dialog);
   private message = inject(MessageSnackbarService);
 
-  inPokedex!: boolean;
+  inPokedex = computed(() => {
+    const pokedex = this.pokedexCrud.pokedex();
+    return pokedex.some((p) => p.id === this.pokemonDetails.id);
+  });
 
   constructor(@Inject(MAT_DIALOG_DATA) public pokemonDetails: PokemonDetails) {}
 
   @Output() addPokemon = new EventEmitter<void>();
 
-  ngOnInit(): void {
-    this.updatePokedexStatus(this.pokemonDetails);
-    this.pokedexCrud.getResetFavorites().subscribe((inPokedex) => {
-      this.inPokedex = inPokedex;
-      console.log('CardPokemonDetail', {
-        inPokedex,
-        inPokedexBoolean: this.inPokedex,
-        timestamp: new Date().toLocaleString(),
-      });
-    });
-  }
   add() {
     const addedSuccessfully = this.pokedexCrud.setFavoritePokemon(
       this.pokemonDetails
@@ -51,7 +68,6 @@ export class CardPokemonDetailsComponent {
         panelClass: 'success',
       };
       this.message.showSnackBar(this.snackbar, succesData);
-      console.log('pokemon added', this.pokemonDetails);
       this.addPokemon.emit();
     } else {
       console.warn('No added');
@@ -60,33 +76,5 @@ export class CardPokemonDetailsComponent {
 
   close() {
     this.dialogRef.close();
-  }
-  /**
-   * Método para actualizar el estado de un Pokémon en el Pokedex.
-   * Emite un valor booleano, para identificar el Pokémon en el Pokedex.
-   * @param pokemonDetails - Detalles del Pokémon.
-   */
-
-  updatePokedexStatus(pokemonDetails: PokemonDetails) {
-    this.pokedexCrud
-      .getPokedex$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((pokedexData) => {
-        const inPokedex = pokedexData.some(
-          (pokemon) => pokemon.id === pokemonDetails.id
-        );
-        this.uploadFavorites.next(inPokedex);
-        this.inPokedex = inPokedex;
-        console.log('PokedeStatus', {
-          pokemonDetails,
-          inPokedex,
-          timestamp: new Date().toLocaleString(),
-        });
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }
