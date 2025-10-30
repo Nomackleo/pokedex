@@ -23,23 +23,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-card-pokemon',
-  templateUrl: './card-pokemon.component.html',
-  styleUrls: ['./card-pokemon.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-  ],
+    selector: 'app-card-pokemon',
+    templateUrl: './card-pokemon.component.html',
+    styleUrls: ['./card-pokemon.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+    ]
 })
 export class CardPokemonComponent {
   private pokedex = inject(PokedexService);

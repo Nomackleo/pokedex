@@ -25,20 +25,19 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-card-pokemon-details',
-  templateUrl: './card-pokemon-details.component.html',
-  styleUrls: ['./card-pokemon-details.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatDialogModule,
-  ],
+    selector: 'app-card-pokemon-details',
+    templateUrl: './card-pokemon-details.component.html',
+    styleUrls: ['./card-pokemon-details.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatChipsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatDialogModule,
+    ]
 })
 export class CardPokemonDetailsComponent {
   private snackbar = inject(MatSnackBar);
