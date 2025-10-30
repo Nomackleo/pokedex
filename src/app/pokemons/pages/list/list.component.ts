@@ -31,6 +31,7 @@ import { CommonModule } from '@angular/common';
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
     imports: [CommonModule, CardPokemonComponent, MatDialogModule]
 })
 export class ListComponent {
