@@ -12,13 +12,9 @@
     class="mat-elevation-z8 animate__animated animate__fadeIn table-container"
   >
     <div class="spinner__container">
-      <mat-spinner
-        diameter="50"
-        *ngIf="!dataSource"
-        class="spinner"
-      ></mat-spinner>
+      <mat-spinner diameter="50" *ngIf="loading" class="spinner"></mat-spinner>
     </div>
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="loading = false">
       <!-- ID Column -->
 
       <ng-container matColumnDef="id">
@@ -96,6 +92,7 @@
 
     <mat-paginator
       [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="10"
       aria-label="Select Page Pokemon"
     ></mat-paginator>
   </div>

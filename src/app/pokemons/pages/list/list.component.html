@@ -1,10 +1,19 @@
 <h1 class="title">Lista de Pokemones</h1>
-<app-card-pokemon
-  [pokemon$]="allPokemon$"
-  [dataSource]="dataSource"
-  [pageSize]="pageSize"
-  (pokemonEmitter)="selectPokemon($event)"
-  (addPokemon)="add($event)"
-  (removePokemon)="remove($event)"
-  class="card-list animate__animated animate__fadeIn"
-></app-card-pokemon>
+@defer (on viewport) {
+  <app-card-pokemon
+    [pokemons]="pokemons()"
+    (pokemonEmitter)="selectPokemon($event)"
+    (addPokemon)="add($event)"
+    (removePokemon)="remove($event)"
+    class="card-list animate__animated animate__fadeIn"
+  ></app-card-pokemon>
+} @placeholder {
+  <div class="card-list placeholder animate__animated animate__fadeIn">
+    <div class="placeholder__header"></div>
+    <div class="placeholder__body">
+      @for (item of [1, 2, 3, 4, 5]; track item) {
+        <div class="skeleton-row"></div>
+      }
+    </div>
+  </div>
+}

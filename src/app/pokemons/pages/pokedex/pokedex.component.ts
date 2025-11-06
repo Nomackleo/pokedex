@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MessageSnackbarData, PokemonDetails } from '../../models';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageSnackbarService } from '../../services/message-snackbar.service';
 import { RouterModule } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
     selector: 'app-pokedex',
     templateUrl: './pokedex.component.html',
     styleUrls: ['./pokedex.component.css'],
+    standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
         RouterModule,
@@ -22,7 +24,8 @@ import { CommonModule } from '@angular/common';
         MatCardModule,
         MatChipsModule,
         MatIconModule,
-        MatTooltipModule,
+    MatTooltipModule,
+    MatSnackBarModule,
     ]
 })
 export class PokedexComponent {
@@ -32,7 +35,6 @@ export class PokedexComponent {
   private pokedexCrud = inject(PokedexCrudService);
 
   pokedex = this.pokedexCrud.pokedex;
-  selectedPokemon?: PokemonDetails;
 
   /**
    * Método para remover un Pokémon del Pokedex.
@@ -51,12 +53,5 @@ export class PokedexComponent {
       }
     });
     this.pokedexCrud.removeFavoritePokemon(pokemon);
-  }
-  /**
-   * Método para seleccionar un Pokémon del Pokedex.
-   * @param pokemon - Pokémon seleccionado.
-   */
-  selectPokemon(pokemon: PokemonDetails) {
-    this.selectedPokemon = pokemon;
   }
 }

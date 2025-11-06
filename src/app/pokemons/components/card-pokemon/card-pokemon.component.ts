@@ -6,14 +6,11 @@ import {
   Input,
   Output,
   ViewChild,
-  inject,
 } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { Pokemon } from '../../models/pokemons.interfaces';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { PokedexService } from '../../services/pokedex.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +24,7 @@ import { CommonModule } from '@angular/common';
     templateUrl: './card-pokemon.component.html',
     styleUrls: ['./card-pokemon.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
     imports: [
         CommonModule,
         MatFormFieldModule,
@@ -41,15 +39,15 @@ import { CommonModule } from '@angular/common';
     ]
 })
 export class CardPokemonComponent {
-  private pokedex = inject(PokedexService);
   displayedColumns: string[] = ['id', 'name', 'pic', 'pokedex'];
   isMobileView: boolean = false;
   loading: boolean = true;
-  destroyed$ = new Subject<void>();
 
-  @Input() dataSource!: MatTableDataSource<Pokemon>;
-  @Input() pokemon$!: Observable<Pokemon[]>;
-  @Input() pageSize!: number;
+  readonly dataSource = new MatTableDataSource<Pokemon>();
+  @Input() set pokemons(value: Pokemon[]) {
+    this.dataSource.data = value ?? [];
+    this.loading = this.dataSource.data.length === 0;
+  }
   @Output() pokemonEmitter = new EventEmitter<Pokemon>();
   @Output() addPokemon = new EventEmitter<Pokemon>();
   @Output() removePokemon = new EventEmitter<Pokemon>();
@@ -64,12 +62,13 @@ export class CardPokemonComponent {
 
   ngAfterViewInit(): void {
     this.isMobileView = window.innerWidth < 625;
+    this.loading = this.dataSource.data.length === 0;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   selectPokemon(pokemon: Pokemon) {
     this.pokemonEmitter.emit(pokemon);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -96,8 +95,5 @@ export class CardPokemonComponent {
     e.stopPropagation();
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
+  ngOnDestroy(): void {}
 }

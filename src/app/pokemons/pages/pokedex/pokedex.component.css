@@ -31,15 +31,15 @@
   gap: 20px;
 }
 .mat-mdc-raised-button.mat-unthemed {
-  --mdc-protected-button-container-color: #004bad;
-  --mdc-protected-button-label-text-color: #fff;
+  --mat-button-protected-container-color: #004bad;
+  --mat-button-protected-label-text-color: #fff;
 }
 .mat-mdc-outlined-button {
   background-color: rgba(190, 65, 128, 0.21);
   color: #be4180;
 }
 .mat-mdc-outlined-button.mat-unthemed {
-  --mdc-outlined-button-label-text-color: #be4180;
+  --mat-button-outlined-label-text-color: #be4180;
 }
 @media (max-width: 930px) {
   .cards__container {
@@ -68,6 +68,23 @@
   background-color: rgba(245, 201, 59, 0.9) !important;
   border: 6px solid #004bad;
   border-radius: 15px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 220ms ease, opacity 220ms ease;
+  @starting-style {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.pokedex-card-enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pokedex-card-leave {
+  opacity: 0;
+  transform: translateY(-12px);
 }
 
 .mat-mdc-card-title {

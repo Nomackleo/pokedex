@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PokedexCrudService } from '../../services/pokedex-crud.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatListModule } from '@angular/material/list';
@@ -12,6 +12,8 @@ import { RouterModule } from '@angular/router';
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css'],
+    standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         RouterModule,
         MatSidenavModule,

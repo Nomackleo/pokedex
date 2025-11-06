@@ -5,18 +5,18 @@
   width: 100%;
 }
 .mat-mdc-fab.mat-primary,.mat-mdc-mini-fab.mat-primary {
-  --mdc-fab-container-color: #328afd;
-  --mdc-fab-icon-color: white;
+  --mat-fab-container-color: #328afd;
+  --mat-fab-icon-color: white;
   --mat-mdc-fab-color: #fff
 }
 .mat-mdc-fab[disabled][disabled],.mat-mdc-mini-fab[disabled][disabled] {
-  --mdc-fab-container-color: rgba(255, 255, 255, 0.12);
-  --mdc-fab-icon-color: rgba(255, 255, 255, 0.5);
+  --mat-fab-container-color: rgba(255, 255, 255, 0.12);
+  --mat-fab-icon-color: rgba(255, 255, 255, 0.5);
   --mat-mdc-fab-color: rgba(255, 255, 255, 0.5)
 }
 .mat-mdc-fab.mat-warn,.mat-mdc-mini-fab.mat-warn {
-  --mdc-fab-container-color: #be4180;
-  --mdc-fab-icon-color: white;
+  --mat-fab-container-color: #be4180;
+  --mat-fab-icon-color: white;
   --mat-mdc-fab-color: #fff
 }
 .spinner__container {
@@ -26,7 +26,7 @@
   margin: 1rem;
 }
 .mat-mdc-progress-spinner {
-  --mdc-circular-progress-active-indicator-color: #f5c93b;
+  --mat-progress-spinner-active-indicator-color: #f5c93b;
 }
 .filter-field {
   width: 100%;

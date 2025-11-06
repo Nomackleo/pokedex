@@ -1,21 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_SNACK_BAR_DATA, MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { MessagesComponent } from './messages.component';
-import { MatIconModule } from '@angular/material/icon';
 
 describe('MessagesComponent', () => {
   let component: MessagesComponent;
   let fixture: ComponentFixture<MessagesComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatIconModule],
-      declarations: [MessagesComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MessagesComponent],
       providers: [
         { provide: MAT_SNACK_BAR_DATA, useValue: {} },
         { provide: MatSnackBarRef, useValue: {} }
-      ]
-    });
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(MessagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

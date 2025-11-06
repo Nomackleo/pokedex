@@ -10,52 +10,58 @@
     <button mat-raised-button routerLink="../list">Pokemons</button>
   </div>
   <div class="cards__container">
-    <mat-card class="card-pokemon" *ngFor="let pokemonDetails of pokedex()">
-      <mat-card-header>
-        <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
-        <mat-card-subtitle>
-          {{ pokemonDetails.order }}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <img
-        mat-card-image
-        height="210px"
-        [src]="pokemonDetails.pic"
-        alt="Foto de {{ pokemonDetails.name }}"
-        loading="lazy"
-      />
-      <mat-card-content>
-        <div class="cards__type">
-          <mat-chip-set aria-label="Tipo de pokemon">
-            <mat-chip *ngFor="let type of pokemonDetails.types">{{
-              type.type.name | uppercase
-            }}</mat-chip>
-          </mat-chip-set>
-        </div>
-        <div class="list">
-          <ul>
-            <li class="experience">
-              Experiencia: <span>{{ pokemonDetails.base_experience }}</span>
-            </li>
-            <li class="weight">
-              Peso: <span>{{ pokemonDetails.weight }}</span> kg
-            </li>
-            <li class="height">
-              Altura: <span>{{ pokemonDetails.height }}</span> ft
-            </li>
-          </ul>
-        </div>
-        <mat-card-actions>
-          <button
-            mat-stroked-button
-            (click)="remove(pokemonDetails.id)"
-            matTooltip="Remover pokemon del pokedex"
-          >
-            <mat-icon>remove</mat-icon>
-            Remover
-          </button>
-        </mat-card-actions>
-      </mat-card-content>
-    </mat-card>
+    @for (pokemonDetails of pokedex(); track pokemonDetails.id) {
+      <mat-card
+        class="card-pokemon"
+        animate.enter="pokedex-card-enter"
+        animate.leave="pokedex-card-leave"
+      >
+        <mat-card-header>
+          <mat-card-title>{{ pokemonDetails.name | uppercase }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ pokemonDetails.order }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <img
+          mat-card-image
+          height="210px"
+          [src]="pokemonDetails.pic"
+          alt="Foto de {{ pokemonDetails.name }}"
+          loading="lazy"
+        />
+        <mat-card-content>
+          <div class="cards__type">
+            <mat-chip-set aria-label="Tipo de pokemon">
+              @for (type of pokemonDetails.types; track type.type.name) {
+                <mat-chip>{{ type.type.name | uppercase }}</mat-chip>
+              }
+            </mat-chip-set>
+          </div>
+          <div class="list">
+            <ul>
+              <li class="experience">
+                Experiencia: <span>{{ pokemonDetails.base_experience }}</span>
+              </li>
+              <li class="weight">
+                Peso: <span>{{ pokemonDetails.weight }}</span> kg
+              </li>
+              <li class="height">
+                Altura: <span>{{ pokemonDetails.height }}</span> ft
+              </li>
+            </ul>
+          </div>
+          <mat-card-actions>
+            <button
+              mat-stroked-button
+              (click)="remove(pokemonDetails.id)"
+              matTooltip="Remover pokemon del pokedex"
+            >
+              <mat-icon>remove</mat-icon>
+              Remover
+            </button>
+          </mat-card-actions>
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
 </div>
