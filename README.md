@@ -56,3 +56,4 @@ Un servicio para mostrar mensajes a través de un MatSnackBar. Utiliza el compon
 4. Abre tu navegador y visita `http://localhost:4200/`.
 
 ¡Disfruta explorando la Pokedex Angular App!
+# pokedex_container
