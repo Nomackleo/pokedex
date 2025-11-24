@@ -1,0 +1,35 @@
+# Dependencias locales (se instalan dentro del contenedor)
+node_modules
+npm-debug.log
+
+# Archivos de compilación locales
+dist
+/dist
+/out-tsc
+/bazel-out
+
+# Configuración del IDE
+.idea
+.vscode
+*.suo
+*.ntvs
+*.njsproj
+*.sln
+*.sw?
+
+# Sistema de control de versiones
+.git
+.gitignore
+
+# Archivos de entorno local (Seguridad)
+.env
+.env.local
+
+# Documentación y otros no necesarios en prod
+README.md
+GEMINI.md
+GEMINI.pdf
+*.excalidraw
+AUDIT_REPORT.md
+docs
+coverage

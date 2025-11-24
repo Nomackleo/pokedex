@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  pokedex-app:
+    # Nombre del contenedor para facilitar su identificación
+    container_name: pokedex-container
+
+    # Contexto de construcción: usa el Dockerfile en el directorio actual
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Mapeo de puertos: Host:Contenedor
+    # Accederemos a la app en http://localhost:8080
+    ports:
+      - "8080:80"
+
+    # Reinicio automático en caso de fallo (resiliencia)
+    restart: always
+
+    # Variables de entorno (si fueran necesarias para la API, etc.)
+    # environment:
+    #   - API_URL=https://pokeapi.co/api/v2/
